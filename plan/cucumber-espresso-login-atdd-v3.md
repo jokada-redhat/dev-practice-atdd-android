@@ -66,7 +66,8 @@ decisions:
 ### クリティカルパス
 
 ```
-B-1 → B-2 → B-3 → B-4 → B-8(+A-1) → B-9(+C-1,C-6) → B-10 → B-11
+B-1 → B-2 → B-8(+A-1) → B-9(+C-1,C-6) → B-10(+C-7) → B-11
+         └→ B-3 → B-4（並列パス、B-8より先に完了想定）
 ```
 
 ### 依存グラフ
@@ -142,6 +143,7 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
   - **No-Go**: 追加なし（JUnit4+Espresso で進行）
   - いずれの場合も `testInstrumentationRunner = "com.example.atdd.test.TestRunner"` に変更
   - `./gradlew build` 成功、`./gradlew test` 全緑
+- **注記**: `testInstrumentationRunner` は文字列設定のため、TestRunner クラス（C-2）が未作成でも build/test は通る。実際に参照されるのは `connectedAndroidTest` 実行時（イテレーション2）
 - **推定**: S
 
 ---
@@ -203,7 +205,7 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
 #### B-8: LoginViewModel + LoginViewModelFactory + LoginUiState の作成
 
 - **トラック**: Dev-B
-- **依存**: [B-2, A-1]（displayName の型 + ViewModel/Coroutine 依存）
+- **依存**: [B-2, A-1]（displayName の型 + ViewModel/Coroutine 依存。B-4 完了は推奨 — JVM テスト全緑確認のため。コンパイル上は B-2+A-1 で着手可能）
 - **新規ファイル**: `app/src/main/kotlin/com/example/atdd/auth/LoginViewModel.kt`, `app/src/main/kotlin/com/example/atdd/auth/LoginUiState.kt`
 - **完了条件**:
   - `LoginUiState` sealed class: `Idle`, `Loading`, `Success(displayName)`, `Error(message)`
@@ -497,6 +499,7 @@ class OkHttpIdlingResource(
     }
 }
 ```
+- **注記**: `idleCallback` と `isIdleNow()` の両方から `onTransitionToIdle()` を呼ぶため二重通知が発生し得る。Espresso は冪等なので通常問題ないが、D-6 で flaky が出た場合は `isIdleNow()` 側を削除し `idleCallback` 一経路に寄せること
 - **推定**: S
 
 #### C-4: TestHelper（BaseURL 注入ヘルパー）の実装
@@ -652,7 +655,7 @@ Feature: ログイン画面からトップ画面への遷移
     When メールアドレス "test@example.com" とパスワード "wrongpass" でログインする
     Then エラーメッセージ "メールアドレスまたはパスワードが正しくありません" が表示されている
 ```
-- **No-Go 版**: Feature ファイルは仕様ドキュメントとして同じ場所に配置（テスト実行はしない）
+- **No-Go 版**: Feature ファイルは仕様ドキュメントとして同じ場所に配置（テスト実行はしない）。No-Go 判明時点で Gherkin ドラフトの先行着手可（A-3 の Gradle 変更を待つ必要なし）
 - **推定**: S
 
 #### D-3: ステップ定義（or JUnit4 テストクラス）の実装 — 正常系
@@ -747,7 +750,7 @@ fun createAuthDispatcher(
 
 ## タスクサマリー
 
-### イテレーション 1（14 タスク）
+### イテレーション 1（18 タスク）
 
 | トラック | タスク | S/M 内訳 | 主な成果物 |
 |---------|--------|---------|-----------|
@@ -767,7 +770,8 @@ fun createAuthDispatcher(
 ### 全体クリティカルパス
 
 ```
-Iter1: B-1 → B-2 → B-3 → B-4 → B-8(+A-1) → B-9(+C-1,C-6) → B-10 → B-11
+Iter1: B-1 → B-2 → B-8(+A-1) → B-9(+C-1,C-6) → B-10(+C-7) → B-11
+                └→ B-3 → B-4（並列、B-8より先に完了想定）
 Iter2: D-2 → D-3(+D-4) → D-5 → D-6
 ```
 
