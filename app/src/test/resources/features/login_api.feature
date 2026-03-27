@@ -8,6 +8,7 @@ Feature: ログインAPI
       | password | password123      |
     Then レスポンスステータスが 200 である
     And レスポンスに "token" フィールドが含まれる
+    And レスポンスに "displayName" フィールドが含まれる
 
   Scenario: 誤った認証情報で401が返る
     Given ログインAPIサーバーが起動している

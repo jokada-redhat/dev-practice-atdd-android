@@ -25,7 +25,7 @@ class LoginSteps {
                 val registeredPassword = registeredUsers[request.email]
                     ?: return LoginResult.Failure("メールアドレスまたはパスワードが正しくありません")
                 return if (registeredPassword == request.password) {
-                    LoginResult.Success("test-token-${request.email}")
+                    LoginResult.Success("test-token-${request.email}", "テストユーザー")
                 } else {
                     LoginResult.Failure("メールアドレスまたはパスワードが正しくありません")
                 }
@@ -78,6 +78,12 @@ class LoginSteps {
     fun errorMessageIsReturned(expectedMessage: String) {
         val failure = loginResult as LoginResult.Failure
         assertEquals(expectedMessage, failure.errorMessage)
+    }
+
+    @And("表示名 {string} が返される")
+    fun displayNameIsReturned(expectedDisplayName: String) {
+        val success = loginResult as LoginResult.Success
+        assertEquals(expectedDisplayName, success.displayName)
     }
 
     @Then("バリデーションエラー {string} が発生する")

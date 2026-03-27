@@ -7,6 +7,7 @@ Feature: ログイン機能
     When メールアドレス "test@example.com" とパスワード "password123" でログインする
     Then ログインが成功する
     And アクセストークンが返される
+    And 表示名 "テストユーザー" が返される
 
   Scenario: 誤ったパスワードではログインできない
     Given ログインAPIが利用可能である

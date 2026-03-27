@@ -50,7 +50,7 @@ class LoginApiSteps {
                 if (email == "test@example.com" && password == "password123") {
                     return MockResponse.Builder()
                         .code(200)
-                        .body("{\"token\":\"mock-jwt-token-12345\"}")
+                        .body("{\"token\":\"mock-jwt-token-12345\",\"displayName\":\"テストユーザー\"}")
                         .build()
                 }
 
