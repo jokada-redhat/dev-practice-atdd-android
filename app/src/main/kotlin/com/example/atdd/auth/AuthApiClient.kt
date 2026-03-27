@@ -20,18 +20,22 @@ class AuthApiClient(private val httpClient: OkHttpClient, private val baseUrl: S
             .build()
 
         return try {
-            val response = httpClient.newCall(httpRequest).execute()
-            val body = response.body?.string() ?: ""
-            val responseJson = JSONObject(body)
+            httpClient.newCall(httpRequest).execute().use { response ->
+                val body = response.body?.string() ?: ""
+                val responseJson = JSONObject(body)
 
-            when (response.code) {
-                200 -> LoginResult.Success(responseJson.getString("token"))
+                when (response.code) {
+                    200 -> LoginResult.Success(
+                        responseJson.getString("token"),
+                        responseJson.getString("displayName")
+                    )
 
-                401 -> LoginResult.Failure(
-                    responseJson.optString("error", "メールアドレスまたはパスワードが正しくありません")
-                )
+                    401 -> LoginResult.Failure(
+                        responseJson.optString("error", "メールアドレスまたはパスワードが正しくありません")
+                    )
 
-                else -> LoginResult.Failure("予期しないエラーが発生しました")
+                    else -> LoginResult.Failure("予期しないエラーが発生しました")
+                }
             }
         } catch (e: Exception) {
             LoginResult.Failure("通信エラーが発生しました")

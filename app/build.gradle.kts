@@ -32,6 +32,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     lint {
         warningsAsErrors = true
         abortOnError = true
@@ -52,6 +56,11 @@ dependencies {
 
     // HTTP client
     implementation("com.squareup.okhttp3:okhttp:5.3.2")
+
+    // ViewModel + Coroutines
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("androidx.activity:activity-ktx:1.13.0")
 
     // Cucumber (JVM unit tests)
     testImplementation("io.cucumber:cucumber-java:7.34.3")

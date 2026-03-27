@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">ATDD Android</string>
+    <string name="login_title">ログイン</string>
+    <string name="email_hint">メールアドレス</string>
+    <string name="password_hint">パスワード</string>
+    <string name="login_button">ログイン</string>
+    <string name="logout_button">ログアウト</string>
+    <string name="top_title">トップ</string>
+    <string name="error_content_description">エラーメッセージ</string>
+    <string name="display_name_content_description">表示名</string>
 </resources>
