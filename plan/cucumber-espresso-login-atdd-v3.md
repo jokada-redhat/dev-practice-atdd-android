@@ -6,7 +6,7 @@ overview: >
   cucumber-android はスパイクで Go/No-Go 判断し、No-Go 時は JUnit4+Espresso にフォールバック。
   OkHttp3IdlingResource はアーカイブ済み・AndroidX 非対応のため自作 IdlingResource に変更。
 decisions:
-  - cucumber-android: スパイクで Go/No-Go 判断。No-Go なら JUnit4+Espresso
+  - cucumber-android: Go（7.18.1、compileSdk 36 互換性確認済み）
   - displayName: 追加する（ATDD プロセスに沿って Feature 先行）
   - scope: 2イテレーション分割
   - error-scenario: エラー系UIシナリオ1本を追加
@@ -20,6 +20,10 @@ decisions:
 
 ## 変更履歴
 
+- **v3.2** (2026-03-27): イテレーション2 実装完了。cucumber-android スパイク Go 判定（7.18.1）、
+  CucumberAndroidJUnitRunner 継承の TestRunner、OkHttpIdlingResource 自作、
+  MockAuthDispatcher + LoginUiSteps（正常系・エラー系）、TestHelper 実装、
+  connectedDebugAndroidTest 緑化
 - **v3.1** (2026-03-27): イテレーション1 実装完了。セッション管理（S-1〜S-4）追加、
   lifecycle-viewmodel-ktx 2.10.0・activity-ktx 1.13.0 に更新、
   LoginActivity にセッションチェック統合、TopActivity から Intent 経由の displayName 受け渡しを廃止し SessionManager 経由に変更、
@@ -33,7 +37,7 @@ decisions:
 
 | # | 判断事項 | 結論 | 理由 |
 |---|---------|------|------|
-| 1 | cucumber-android 導入 | スパイクで Go/No-Go | ATDD 理念に沿いたいが互換性リスクあり |
+| 1 | cucumber-android 導入 | **Go**（7.18.1） | compileSdk 36 互換性確認済み。CucumberAndroidJUnitRunner は AndroidJUnitRunner 継承で共存可 |
 | 2 | displayName 追加 | 追加する | UI テストの検証価値。ATDD で Feature 先行 |
 | 3 | スコープ | 2イテレーション分割 | リスク軽減。各イテレーションで動くものを確保 |
 | 4 | エラー系シナリオ | 1本追加 | textError View の動作検証に必要 |
@@ -129,8 +133,9 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
 ```
 - **推定**: S
 
-#### A-2: cucumber-android 互換性スパイク（調査）
+#### A-2: cucumber-android 互換性スパイク（調査） ✅
 
+- **ステータス**: 完了（2026-03-27）— Go 判定。cucumber-android 7.18.1、compileSdk 36 互換性確認済み
 - **トラック**: Dev-A
 - **依存**: なし（A-1 と並行可能）
 - **新規ファイル**: `plan/spike-result.md`
@@ -145,8 +150,9 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
   3. 既存テストと共存できる
 - **推定**: M
 
-#### A-3: スパイク結果に基づく Cucumber/JUnit4 テスト依存追加
+#### A-3: スパイク結果に基づく Cucumber/JUnit4 テスト依存追加 ✅
 
+- **ステータス**: 完了（2026-03-27）— cucumber-android 7.18.1 + mockwebserver3 5.3.2 を androidTestImplementation に追加、testInstrumentationRunner を TestRunner に変更
 - **トラック**: Dev-A
 - **依存**: [A-2]
 - **変更ファイル**: `app/build.gradle.kts`
@@ -454,8 +460,9 @@ class AtddApplication : Application() {
 ```
 - **推定**: S
 
-#### C-2: TestRunner クラスの作成
+#### C-2: TestRunner クラスの作成 ✅
 
+- **ステータス**: 完了（2026-03-27）— CucumberAndroidJUnitRunner 継承に変更（Go 判定のため）
 - **トラック**: Dev-C
 - **依存**: [C-1]
 - **新規ファイル**: `app/src/androidTest/kotlin/com/example/atdd/test/TestRunner.kt`
@@ -480,8 +487,9 @@ class TestRunner : AndroidJUnitRunner() {
 ```
 - **推定**: S
 
-#### C-3: 自作 OkHttpIdlingResource の実装
+#### C-3: 自作 OkHttpIdlingResource の実装 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-C
 - **依存**: [C-1]
 - **新規ファイル**: `app/src/androidTest/kotlin/com/example/atdd/test/OkHttpIdlingResource.kt`
@@ -527,8 +535,9 @@ class OkHttpIdlingResource(
 - **注記**: `idleCallback` と `isIdleNow()` の両方から `onTransitionToIdle()` を呼ぶため二重通知が発生し得る。Espresso は冪等なので通常問題ないが、D-6 で flaky が出た場合は `isIdleNow()` 側を削除し `idleCallback` 一経路に寄せること
 - **推定**: S
 
-#### C-4: TestHelper（BaseURL 注入ヘルパー）の実装
+#### C-4: TestHelper（BaseURL 注入ヘルパー）の実装 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-C
 - **依存**: [C-1, A-1]（mockwebserver3 が androidTestImplementation に必要）
 - **新規ファイル**: `app/src/androidTest/kotlin/com/example/atdd/test/TestHelper.kt`
@@ -693,8 +702,9 @@ D-2 → D-3(+D-4) → D-5 → D-6
 
 ---
 
-#### D-1: TestRunner を Cucumber ランナー対応に更新（or 維持）
+#### D-1: TestRunner を Cucumber ランナー対応に更新（or 維持） ✅
 
+- **ステータス**: 完了（2026-03-27）— Go のため CucumberAndroidJUnitRunner 継承に変更
 - **トラック**: Dev-A
 - **依存**: [A-2, A-3]
 - **変更ファイル**: `app/src/androidTest/kotlin/com/example/atdd/test/TestRunner.kt`
@@ -703,8 +713,9 @@ D-2 → D-3(+D-4) → D-5 → D-6
   - **No-Go**: 変更なし（AndroidJUnitRunner 継承のまま）
 - **推定**: S
 
-#### D-2: androidTest 用 Feature ファイル作成（正常系 + エラー系）
+#### D-2: androidTest 用 Feature ファイル作成（正常系 + エラー系） ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-B
 - **依存**: [A-3]
 - **新規ファイル**: `app/src/androidTest/assets/features/login_ui.feature`
@@ -730,8 +741,9 @@ Feature: ログイン画面からトップ画面への遷移
 - **No-Go 版**: Feature ファイルは仕様ドキュメントとして同じ場所に配置（テスト実行はしない）。No-Go 判明時点で Gherkin ドラフトの先行着手可（A-3 の Gradle 変更を待つ必要なし）
 - **推定**: S
 
-#### D-3: ステップ定義（or JUnit4 テストクラス）の実装 — 正常系
+#### D-3: ステップ定義（or JUnit4 テストクラス）の実装 — 正常系 ✅
 
+- **ステータス**: 完了（2026-03-27）— Go 版（Cucumber ステップ定義）で実装
 - **トラック**: Dev-B
 - **依存**: [D-2, D-1, D-4]
 - **Go 版 新規ファイル**: `app/src/androidTest/kotlin/com/example/atdd/steps/ui/LoginUiSteps.kt`
@@ -748,8 +760,9 @@ Feature: ログイン画面からトップ画面への遷移
   - コンパイルが通る
 - **推定**: M
 
-#### D-4: MockAuthDispatcher の作成
+#### D-4: MockAuthDispatcher の作成 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-C
 - **依存**: なし（イテレーション2 開始時に即着手可能）
 - **新規ファイル**: `app/src/androidTest/kotlin/com/example/atdd/test/MockAuthDispatcher.kt`
@@ -792,8 +805,9 @@ fun createAuthDispatcher(
 ```
 - **推定**: S
 
-#### D-5: エラー系ステップ定義の追加
+#### D-5: エラー系ステップ定義の追加 ✅
 
+- **ステータス**: 完了（2026-03-27）— D-3 と同一ファイル (LoginUiSteps.kt) に統合
 - **トラック**: Dev-B
 - **依存**: [D-3, D-4]
 - **変更ファイル**: D-3 で作成したファイル
@@ -802,8 +816,9 @@ fun createAuthDispatcher(
   - コンパイルが通る
 - **推定**: S
 
-#### D-6: connectedDebugAndroidTest 実行と調整
+#### D-6: connectedDebugAndroidTest 実行と調整 ✅
 
+- **ステータス**: 完了（2026-03-27）— cleartext HTTP 許可（debug 用 network_security_config）、baseUrl 末尾スラッシュ除去、CucumberOptions 追加で緑化
 - **トラック**: 合流（全員）
 - **依存**: [D-5, D-1]
 - **変更ファイル**: 必要に応じて調整
@@ -826,19 +841,19 @@ fun createAuthDispatcher(
 
 | トラック | タスク | S/M 内訳 | ステータス | 主な成果物 |
 |---------|--------|---------|----------|-----------|
-| Dev-A | A-1, A-2, A-3 | 1M + 2S | A-1 ✅ / A-2, A-3 未着手 | Gradle 設定 + スパイク結果 |
+| Dev-A | A-1, A-2, A-3 | 1M + 2S | 全完了 ✅ | Gradle 設定 + スパイク結果（Go） |
 | Dev-B | B-1〜B-4, B-8〜B-11 | 2M + 6S | 全完了 ✅ | ドメイン拡張 + UI 全画面 |
-| Dev-C | C-1〜C-7 | 7S | C-1,C-5〜C-7 ✅ / C-2〜C-4 未着手 | AtddApplication + テストインフラ + レイアウト |
+| Dev-C | C-1〜C-7 | 7S | 全完了 ✅ | AtddApplication + テストインフラ + レイアウト |
 | Track S | S-1〜S-4 | 4S | 全完了 ✅ | セッション管理 + テスト |
 
 ### イテレーション 2（6 タスク）
 
-| トラック | タスク | S/M 内訳 | 主な成果物 |
-|---------|--------|---------|-----------|
-| Dev-A | D-1 | 1S | TestRunner 更新 |
-| Dev-B | D-2, D-3, D-5 | 1M + 2S | Feature + ステップ定義 |
-| Dev-C | D-4 | 1S | MockDispatcher |
-| 合流 | D-6 | 1M | 最終統合検証 |
+| トラック | タスク | S/M 内訳 | ステータス | 主な成果物 |
+|---------|--------|---------|----------|-----------|
+| Dev-A | D-1 | 1S | ✅ | TestRunner → CucumberAndroidJUnitRunner |
+| Dev-B | D-2, D-3, D-5 | 1M + 2S | ✅ | Feature + LoginUiSteps（Cucumber） |
+| Dev-C | D-4 | 1S | ✅ | MockAuthDispatcher |
+| 合流 | D-6 | 1M | ✅ | 最終統合検証 |
 
 ### 全体クリティカルパス
 
