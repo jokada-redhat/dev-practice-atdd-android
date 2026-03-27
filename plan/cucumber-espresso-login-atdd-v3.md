@@ -11,13 +11,19 @@ decisions:
   - scope: 2イテレーション分割
   - error-scenario: エラー系UIシナリオ1本を追加
   - idling-resource: OkHttp3IdlingResource は使用不可 → 自作
-  - lifecycle-viewmodel: 2.9.1（compileSdk 36 対応確認済み）
+  - lifecycle-viewmodel: 2.10.0（Lint GradleDependency 警告により 2.9.1 → 2.10.0 に更新）
+  - activity-ktx: 1.13.0（同上、1.10.1 → 1.13.0 に更新）
+  - session-management: SessionRepository + SessionManager でセッション永続化を分離（計画外追加）
 ---
 
 # Cucumber + Espresso + モック API によるログイン ATDD (v3)
 
 ## 変更履歴
 
+- **v3.1** (2026-03-27): イテレーション1 実装完了。セッション管理（S-1〜S-4）追加、
+  lifecycle-viewmodel-ktx 2.10.0・activity-ktx 1.13.0 に更新、
+  LoginActivity にセッションチェック統合、TopActivity から Intent 経由の displayName 受け渡しを廃止し SessionManager 経由に変更、
+  AuthApiClient に Response.use{} 追加、EditText の contentDescription を hint と重複のため除去
 - **v3** (2026-03-23): チームレビューによる精緻化。2イテレーション分割、3トラック並列、
   タスク粒度の細分化、OkHttp3IdlingResource→自作、負荷バランス調整
 - **v2** (2026-03-23): 非同期設計・IdlingResource・BASE_URL 注入方式の具体化
@@ -32,14 +38,18 @@ decisions:
 | 3 | スコープ | 2イテレーション分割 | リスク軽減。各イテレーションで動くものを確保 |
 | 4 | エラー系シナリオ | 1本追加 | textError View の動作検証に必要 |
 | 5 | OkHttp3IdlingResource | 使用不可→自作 | アーカイブ済み・AndroidX 非対応 |
+| 6 | セッション管理 | SessionRepository + SessionManager で分離 | テスト容易性（InMemorySessionRepository で JVM テスト可能）。既存 AuthRepository パターンと統一 |
+| 7 | ログイン状態チェック | LoginActivity.onCreate でチェック | SplashActivity は不要（画面チラつきリスク、LoginActivity で十分シンプル） |
+| 8 | displayName 受け渡し | SessionManager 経由（Intent 不使用） | Single Source of Truth。セッションに保存済みのため Intent は冗長 |
 
 ## 技術的確定事項
 
 | 項目 | 確定値 | 根拠 |
 |------|--------|------|
-| lifecycle-viewmodel-ktx | 2.9.1 | compileSdk 36 対応 |
+| lifecycle-viewmodel-ktx | 2.10.0 | Lint GradleDependency により 2.9.1 → 2.10.0 に更新 |
 | kotlinx-coroutines-android | 1.10.2 | 最新安定版 |
-| activity-ktx | 1.10.1 | viewModels() デリゲート用 |
+| activity-ktx | 1.13.0 | Lint GradleDependency により 1.10.1 → 1.13.0 に更新 |
+| セッション永続化 | SharedPreferences (MODE_PRIVATE) | トークン + displayName のみ。DataStore は過剰 |
 | IdlingResource | 自作（OkHttp Dispatcher.idleCallback 利用） | OkHttp 5.3.2 で公開 API |
 | TestRunner | AndroidJUnitRunner 継承（Go 時に CucumberAndroidJUnitRunner に変更可） | |
 | animationsDisabled | true（build.gradle.kts の testOptions） | フレイキーテスト対策 |
@@ -92,8 +102,10 @@ B-1 → B-2 → B-8(+A-1) → B-9(+C-1,C-6) → B-10(+C-7) → B-11
 
 ### Track A: Gradle 設定 + スパイク
 
-#### A-1: build.gradle.kts にプロダクション依存 + テスト設定を追加
+#### A-1: build.gradle.kts にプロダクション依存 + テスト設定を追加 ✅
 
+- **ステータス**: 完了（2026-03-27）
+- **実装差分**: lifecycle-viewmodel-ktx 2.10.0, activity-ktx 1.13.0 に変更（Lint 警告対応）。mockwebserver3 の androidTestImplementation は未追加（イテレーション2 で追加予定）
 - **トラック**: Dev-A
 - **依存**: なし
 - **変更ファイル**: `app/build.gradle.kts`
@@ -150,8 +162,9 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
 
 ### Track B: ドメイン拡張 + ViewModel + Activity 実装
 
-#### B-1: Feature ファイルに displayName 検証ステップを追加（ATDD: Feature 先行）
+#### B-1: Feature ファイルに displayName 検証ステップを追加（ATDD: Feature 先行） ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-B
 - **依存**: なし
 - **変更ファイル**: `app/src/test/resources/features/login.feature`, `app/src/test/resources/features/login_api.feature`
@@ -161,8 +174,9 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
   - テストは**失敗する**（ATDD の Red 状態）
 - **推定**: S
 
-#### B-2: LoginResult.Success に displayName を追加
+#### B-2: LoginResult.Success に displayName を追加 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-B
 - **依存**: [B-1]
 - **変更ファイル**: `app/src/main/kotlin/com/example/atdd/auth/LoginResult.kt`
@@ -172,8 +186,10 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
 - **作業内容**: L4 を変更
 - **推定**: S
 
-#### B-3: AuthApiClient の displayName パース追加
+#### B-3: AuthApiClient の displayName パース追加 ✅
 
+- **ステータス**: 完了（2026-03-27）
+- **実装差分**: Response.use{} でリソースリーク修正も実施
 - **トラック**: Dev-B
 - **依存**: [B-2]
 - **変更ファイル**: `app/src/main/kotlin/com/example/atdd/auth/AuthApiClient.kt`
@@ -190,8 +206,9 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
 ```
 - **推定**: S
 
-#### B-4: 既存 JVM テストを displayName 対応に更新
+#### B-4: 既存 JVM テストを displayName 対応に更新 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-B
 - **依存**: [B-3]
 - **変更ファイル**: `app/src/test/kotlin/com/example/atdd/steps/LoginSteps.kt`, `app/src/test/kotlin/com/example/atdd/steps/LoginApiSteps.kt`
@@ -202,8 +219,10 @@ androidTestImplementation("com.squareup.okhttp3:mockwebserver3:5.3.2")
   - `./gradlew test` 全緑
 - **推定**: S
 
-#### B-8: LoginViewModel + LoginViewModelFactory + LoginUiState の作成
+#### B-8: LoginViewModel + LoginViewModelFactory + LoginUiState の作成 ✅
 
+- **ステータス**: 完了（2026-03-27）
+- **実装差分**: LoginViewModel に SessionManager を注入し、ログイン成功時にセッション保存を実施
 - **トラック**: Dev-B
 - **依存**: [B-2, A-1]（displayName の型 + ViewModel/Coroutine 依存。B-4 完了は推奨 — JVM テスト全緑確認のため。コンパイル上は B-2+A-1 で着手可能）
 - **新規ファイル**: `app/src/main/kotlin/com/example/atdd/auth/LoginViewModel.kt`, `app/src/main/kotlin/com/example/atdd/auth/LoginUiState.kt`
@@ -263,8 +282,10 @@ class LoginViewModelFactory(
 ```
 - **推定**: M
 
-#### B-9: LoginActivity の実装
+#### B-9: LoginActivity の実装 ✅
 
+- **ステータス**: 完了（2026-03-27）
+- **実装差分**: onCreate でセッションチェック（トークン有 → TopActivity スキップ）を統合。SessionManager を lazy プロパティで共有し二重インスタンス化を回避
 - **トラック**: Dev-B
 - **依存**: [B-8, C-6, C-1]（ViewModel + レイアウト + AtddApplication）
 - **新規ファイル**: `app/src/main/kotlin/com/example/atdd/LoginActivity.kt`
@@ -335,8 +356,10 @@ class LoginActivity : AppCompatActivity() {
 ```
 - **推定**: M
 
-#### B-10: TopActivity の実装
+#### B-10: TopActivity の実装 ✅
 
+- **ステータス**: 完了（2026-03-27）
+- **実装差分**: Intent 経由の displayName 受け渡しを廃止し SessionManager から直接取得。ログアウト時にセッションクリアを実施
 - **トラック**: Dev-B
 - **依存**: [C-7]（activity_top.xml）
 - **新規ファイル**: `app/src/main/kotlin/com/example/atdd/TopActivity.kt`
@@ -369,8 +392,9 @@ class TopActivity : AppCompatActivity() {
 ```
 - **推定**: S
 
-#### B-11: AndroidManifest.xml 更新 + MainActivity 削除
+#### B-11: AndroidManifest.xml 更新 + MainActivity 削除 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-B
 - **依存**: [B-9, B-10, C-1]
 - **変更ファイル**: `app/src/main/AndroidManifest.xml`
@@ -405,8 +429,9 @@ class TopActivity : AppCompatActivity() {
 
 ### Track C: Application 基盤 + テストインフラ + レイアウト
 
-#### C-1: AtddApplication クラスの作成
+#### C-1: AtddApplication クラスの作成 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-C
 - **依存**: なし
 - **新規ファイル**: `app/src/main/kotlin/com/example/atdd/AtddApplication.kt`
@@ -531,8 +556,10 @@ object TestHelper {
 ```
 - **推定**: S
 
-#### C-5: strings.xml に全画面の文字列リソースを追加
+#### C-5: strings.xml に全画面の文字列リソースを追加 ✅
 
+- **ステータス**: 完了（2026-03-27）
+- **実装差分**: EditText に hint がある場合は contentDescription 不要（Lint ContentDescription 警告）のため email/password の contentDescription を除去
 - **トラック**: Dev-C
 - **依存**: なし（早期着手可能）
 - **変更ファイル**: `app/src/main/res/values/strings.xml`
@@ -557,8 +584,9 @@ object TestHelper {
 ```
 - **推定**: S
 
-#### C-6: activity_login.xml レイアウト作成
+#### C-6: activity_login.xml レイアウト作成 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-C
 - **依存**: [C-5]
 - **新規ファイル**: `app/src/main/res/layout/activity_login.xml`
@@ -569,8 +597,9 @@ object TestHelper {
   - Lint 警告なし
 - **推定**: S
 
-#### C-7: activity_top.xml レイアウト作成
+#### C-7: activity_top.xml レイアウト作成 ✅
 
+- **ステータス**: 完了（2026-03-27）
 - **トラック**: Dev-C
 - **依存**: [C-5]
 - **新規ファイル**: `app/src/main/res/layout/activity_top.xml`
@@ -578,6 +607,49 @@ object TestHelper {
   - View ID: `textDisplayName`, `buttonLogout`
   - 全テキストが `@string/` 参照、contentDescription 設定済み
   - Lint 警告なし
+- **推定**: S
+
+---
+
+### Track S: セッション管理（v3.1 追加）
+
+#### S-1: session.feature 作成（ATDD: Feature 先行） ✅
+
+- **ステータス**: 完了（2026-03-27）
+- **依存**: なし
+- **新規ファイル**: `app/src/test/resources/features/session.feature`
+- **完了条件**: セッションの保存・判定・クリアの 4 シナリオ記述
+- **推定**: S
+
+#### S-2: SessionRepository + SessionManager 作成 ✅
+
+- **ステータス**: 完了（2026-03-27）
+- **依存**: [S-1]
+- **新規ファイル**: `app/src/main/kotlin/com/example/atdd/session/SessionRepository.kt`, `app/src/main/kotlin/com/example/atdd/session/SessionManager.kt`
+- **完了条件**:
+  - `SessionRepository` interface: `saveToken`, `getToken`, `saveDisplayName`, `getDisplayName`, `clear`
+  - `SessionManager(sessionRepository)`: `isLoggedIn`, `saveSession`, `getDisplayName`, `clearSession`
+- **推定**: S
+
+#### S-3: SessionSteps 作成（InMemorySessionRepository + テスト Green 化） ✅
+
+- **ステータス**: 完了（2026-03-27）
+- **依存**: [S-2]
+- **新規ファイル**: `app/src/test/kotlin/com/example/atdd/steps/SessionSteps.kt`
+- **完了条件**:
+  - `InMemorySessionRepository` でモック実装
+  - 4 シナリオの全ステップ定義
+  - `./gradlew test` 全緑
+- **推定**: S
+
+#### S-4: SharedPreferencesSessionRepository 実装 ✅
+
+- **ステータス**: 完了（2026-03-27）
+- **依存**: [S-3]
+- **新規ファイル**: `app/src/main/kotlin/com/example/atdd/session/SharedPreferencesSessionRepository.kt`
+- **完了条件**:
+  - `SharedPreferences` (MODE_PRIVATE) による永続化実装
+  - KTX 拡張関数 `prefs.edit { }` を使用（Lint UseKtx 対応）
 - **推定**: S
 
 ---
@@ -750,13 +822,14 @@ fun createAuthDispatcher(
 
 ## タスクサマリー
 
-### イテレーション 1（18 タスク）
+### イテレーション 1（22 タスク: 18 + S-1〜S-4）
 
-| トラック | タスク | S/M 内訳 | 主な成果物 |
-|---------|--------|---------|-----------|
-| Dev-A | A-1, A-2, A-3 | 1M + 2S | Gradle 設定 + スパイク結果 |
-| Dev-B | B-1〜B-4, B-8〜B-11 | 2M + 6S | ドメイン拡張 + UI 全画面 |
-| Dev-C | C-1〜C-7 | 7S | AtddApplication + テストインフラ + レイアウト |
+| トラック | タスク | S/M 内訳 | ステータス | 主な成果物 |
+|---------|--------|---------|----------|-----------|
+| Dev-A | A-1, A-2, A-3 | 1M + 2S | A-1 ✅ / A-2, A-3 未着手 | Gradle 設定 + スパイク結果 |
+| Dev-B | B-1〜B-4, B-8〜B-11 | 2M + 6S | 全完了 ✅ | ドメイン拡張 + UI 全画面 |
+| Dev-C | C-1〜C-7 | 7S | C-1,C-5〜C-7 ✅ / C-2〜C-4 未着手 | AtddApplication + テストインフラ + レイアウト |
+| Track S | S-1〜S-4 | 4S | 全完了 ✅ | セッション管理 + テスト |
 
 ### イテレーション 2（6 タスク）
 
@@ -805,10 +878,12 @@ Iter2: D-2 → D-3(+D-4) → D-5 → D-6
 | Layout | `activity_login.xml`, `activity_top.xml` | 新規 |
 | Resources | `strings.xml` | 変更 |
 | Manifest | `AndroidManifest.xml` | 変更 |
+| Session | `SessionRepository.kt`, `SessionManager.kt`, `SharedPreferencesSessionRepository.kt` | 新規 |
 | Domain | `LoginResult.kt` | 変更 |
 | API | `AuthApiClient.kt` | 変更 |
 | 既存テスト | `LoginSteps.kt`, `LoginApiSteps.kt` | 変更 |
-| Feature(JVM) | `login.feature`, `login_api.feature` | 変更 |
+| Feature(JVM) | `login.feature`, `login_api.feature`, `session.feature` | 変更/新規 |
+| Step定義(JVM) | `SessionSteps.kt` | 新規 |
 | Feature(androidTest) | `login_ui.feature` | 新規 |
 | Step定義(androidTest) | `LoginUiSteps.kt` or `LoginUiTest.kt` | 新規 |
 | TestRunner | `TestRunner.kt` | 新規 |
