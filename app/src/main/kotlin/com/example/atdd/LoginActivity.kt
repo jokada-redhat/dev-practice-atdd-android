@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.atdd.auth.AuthApiClient
+import com.example.atdd.auth.AuthSkipper
 import com.example.atdd.auth.LoginUiState
 import com.example.atdd.auth.LoginUseCase
 import com.example.atdd.auth.LoginViewModel
@@ -31,7 +32,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (sessionManager.isLoggedIn()) {
+        if (AuthSkipper.applyIfNeeded(BuildConfig.SKIP_AUTH, sessionManager)
+            || sessionManager.isLoggedIn()) {
             startActivity(Intent(this, TopActivity::class.java))
             finish()
             return
