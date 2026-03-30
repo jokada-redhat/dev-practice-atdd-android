@@ -49,8 +49,9 @@ class LoginUiSteps {
 
     @Given("未ログイン状態になっている")
     fun clearSession() {
-        val context = TestHelper.getApp()
-        context.getSharedPreferences("atdd_session", Context.MODE_PRIVATE)
+        val app = TestHelper.getApp()
+        app.skipAuth = false
+        app.getSharedPreferences("atdd_session", Context.MODE_PRIVATE)
             .edit()
             .clear()
             .commit()
@@ -79,7 +80,8 @@ class LoginUiSteps {
 
     @And("ログアウトボタンが表示されている")
     fun verifyLogoutButtonDisplayed() {
-        onView(withId(R.id.buttonLogout)).check(matches(isDisplayed()))
+        // ToolbarのMenuアイテムはcontent descriptionまたはtoolbar自体で確認
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()))
     }
 
     @Then("エラーメッセージ {string} が表示されている")

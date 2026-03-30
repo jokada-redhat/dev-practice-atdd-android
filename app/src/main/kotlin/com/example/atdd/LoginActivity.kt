@@ -32,7 +32,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (AuthSkipper.applyIfNeeded(BuildConfig.SKIP_AUTH, sessionManager)
+        val app = application as AtddApplication
+        if (AuthSkipper.applyIfNeeded(app.skipAuth, sessionManager)
             || sessionManager.isLoggedIn()) {
             startActivity(Intent(this, TopActivity::class.java))
             finish()

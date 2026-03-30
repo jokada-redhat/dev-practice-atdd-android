@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import org.hamcrest.Matchers.anything
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -79,7 +80,6 @@ class LibraryUiSteps {
     }
 
     @Then("会員 {string} のカードが表示されている")
-    @And("会員 {string} のカードが表示されている")
     fun memberCardIsDisplayed(name: String) {
         onView(withText(name)).check(matches(isDisplayed()))
     }
@@ -114,12 +114,16 @@ class LibraryUiSteps {
 
     @Then("書籍 {string} のカードが表示されている")
     fun bookCardIsDisplayed(title: String) {
-        onView(withText(title)).check(matches(isDisplayed()))
+        // NestedScrollView + RecyclerView のため、ビュー階層内の存在を確認
+        onView(withId(R.id.recyclerViewBooks))
+            .check(matches(hasDescendant(withText(title))))
     }
 
     @And("書籍 {string} のカードが表示されていない")
     fun bookCardIsNotDisplayed(title: String) {
-        onView(withText(title)).check(doesNotExist())
+        // フィルタ後にビュー階層から消えていることを確認
+        onView(withId(R.id.recyclerViewBooks))
+            .check(matches(org.hamcrest.Matchers.not(hasDescendant(withText(title)))))
     }
 
     @When("{string} フィルタボタンをタップする")
