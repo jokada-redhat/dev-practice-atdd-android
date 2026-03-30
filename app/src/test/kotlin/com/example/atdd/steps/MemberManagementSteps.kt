@@ -142,4 +142,21 @@ class MemberManagementSteps {
             memberList.any { it.name == name }
         )
     }
+
+    @When("名前が空で登録しようとする")
+    fun tryToRegisterWithEmptyName() {
+        val request = RegisterMemberRequest(name = "", email = "test@example.com")
+        registerResult = registerMemberUseCase.execute(request)
+        when (val result = registerResult) {
+            is RegisterMemberResult.ValidationError -> {
+                CommonSteps.lastErrorMessage = result.message
+            }
+            else -> {}
+        }
+    }
+
+    @Then("バリデーションエラー {string} が返される")
+    fun validationErrorIsReturned(expectedMessage: String) {
+        assertEquals("バリデーションエラーが一致しません", expectedMessage, CommonSteps.lastErrorMessage)
+    }
 }

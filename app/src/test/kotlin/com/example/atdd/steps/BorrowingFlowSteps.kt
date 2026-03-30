@@ -199,9 +199,35 @@ class BorrowingFlowSteps {
         val request = ReturnBookRequest(memberId = memberId, bookId = bookId)
         returnResult = returnBookUseCase.execute(request)
 
-        // エラーメッセージを共通変数に設定
         when (val result = returnResult) {
             is ReturnBookResult.Failure -> {
+                CommonSteps.lastErrorMessage = result.errorMessage
+            }
+            else -> {}
+        }
+    }
+
+    @When("存在しない会員 {string} が書籍 {string} を借りようとする")
+    fun nonExistentMemberTriesToBorrow(memberId: String, title: String) {
+        val bookId = title.hashCode().toString()
+        val request = BorrowBookRequest(memberId = memberId, bookId = bookId)
+        borrowResult = borrowBookUseCase.execute(request)
+
+        when (val result = borrowResult) {
+            is BorrowBookResult.Failure -> {
+                CommonSteps.lastErrorMessage = result.errorMessage
+            }
+            else -> {}
+        }
+    }
+
+    @When("会員 {string} が存在しない書籍を借りようとする")
+    fun memberTriesToBorrowNonExistentBook(memberId: String) {
+        val request = BorrowBookRequest(memberId = memberId, bookId = "non-existent-id")
+        borrowResult = borrowBookUseCase.execute(request)
+
+        when (val result = borrowResult) {
+            is BorrowBookResult.Failure -> {
                 CommonSteps.lastErrorMessage = result.errorMessage
             }
             else -> {}

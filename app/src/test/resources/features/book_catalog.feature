@@ -48,3 +48,29 @@ Feature: 書籍カタログ
     When 書籍を "Borges" で検索する
     Then 検索結果に 1 件の書籍が含まれている
     And 書籍検索結果に "The Infinite Library" が含まれている
+
+  Scenario: 検索結果が0件の場合は空リストが返される
+    Given 以下の書籍が登録されている:
+      | title                | author            | isbn           | publicationYear | status    |
+      | The Infinite Library | Jorge Luis Borges | 978-0142437889 | 1941            | AVAILABLE |
+    When 書籍を "存在しないタイトル" で検索する
+    Then 検索結果に 0 件の書籍が含まれている
+
+  Scenario: ISBNで書籍を検索する
+    Given 以下の書籍が登録されている:
+      | title                | author            | isbn           | publicationYear | status    |
+      | The Infinite Library | Jorge Luis Borges | 978-0142437889 | 1941            | AVAILABLE |
+      | Neuromancer          | William Gibson    | 978-0441569595 | 1984            | BORROWED  |
+    When 書籍を "978-0142437889" で検索する
+    Then 検索結果に 1 件の書籍が含まれている
+    And 書籍検索結果に "The Infinite Library" が含まれている
+
+  Scenario: Allフィルタで全書籍が表示される
+    Given 以下の書籍が登録されている:
+      | title                | author            | isbn           | publicationYear | status    |
+      | The Infinite Library | Jorge Luis Borges | 978-0142437889 | 1941            | AVAILABLE |
+      | Neuromancer          | William Gibson    | 978-0441569595 | 1984            | BORROWED  |
+    When 書籍一覧を取得する
+    Then 書籍リストに 2 件の書籍が含まれている
+    And 書籍リストに "The Infinite Library" が含まれている
+    And 書籍リストに "Neuromancer" が含まれている

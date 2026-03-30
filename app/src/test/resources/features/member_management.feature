@@ -32,3 +32,34 @@ Feature: 会員管理
     When 会員 "山田次郎" をメールアドレス "taro@example.com" で登録しようとする
     Then エラーメッセージ "このメールアドレスは既に登録されています" が返される
     And 会員リストに "山田次郎" が含まれていない
+
+  Scenario: 名前が空の場合は登録できない
+    Given 会員リストが空である
+    When 名前が空で登録しようとする
+    Then バリデーションエラー "名前を入力してください" が返される
+
+  Scenario: メールアドレスが空の場合は登録できない
+    Given 会員リストが空である
+    When 会員 "山田太郎" をメールアドレス "" で登録しようとする
+    Then バリデーションエラー "メールアドレスを入力してください" が返される
+
+  Scenario: メールアドレスの形式が不正な場合は登録できない
+    Given 会員リストが空である
+    When 会員 "山田太郎" をメールアドレス "invalid-email" で登録しようとする
+    Then バリデーションエラー "有効なメールアドレスを入力してください" が返される
+
+  Scenario: 検索結果が0件の場合は空リストが返される
+    Given 以下の会員が登録されている:
+      | id       | name         | email              | loanCount |
+      | DA-8821  | Taro Yamada  | taro@example.com   | 0         |
+    When 会員を "存在しない名前" で検索する
+    Then 検索結果に 0 件の会員が含まれている
+
+  Scenario: IDで会員を検索する
+    Given 以下の会員が登録されている:
+      | id       | name         | email              | loanCount |
+      | DA-8821  | Taro Yamada  | taro@example.com   | 0         |
+      | DA-1156  | Marcus Thorne| marcus@example.com | 0         |
+    When 会員を "DA-8821" で検索する
+    Then 検索結果に 1 件の会員が含まれている
+    And 会員検索結果に "Taro Yamada" が含まれている
