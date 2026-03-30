@@ -18,7 +18,7 @@
             android:layout_height="80dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp"
-            android:src="@android:drawable/ic_menu_send"
+            android:src="@drawable/ic_check_circle"
             android:tint="@color/primary"
             android:contentDescription="@string/loan_confirmed_title" />
 

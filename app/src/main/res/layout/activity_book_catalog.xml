@@ -19,7 +19,7 @@
             android:background="@color/surface_container_lowest"
             app:title="@string/book_catalog_title"
             app:titleTextColor="@color/on_surface"
-            app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel" />
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -55,7 +55,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="12dp"
-                        android:src="@android:drawable/ic_menu_myplaces"
+                        android:src="@drawable/ic_person"
                         android:tint="@color/primary"
                         android:contentDescription="@string/active_selection" />
 
@@ -92,7 +92,7 @@
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
                         android:padding="0dp"
-                        app:icon="@android:drawable/ic_menu_rotate"
+                        app:icon="@drawable/ic_swap_horiz"
                         app:iconTint="@color/primary"
                         app:iconPadding="0dp"
                         app:iconGravity="textStart"
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
-                    app:startIconDrawable="@android:drawable/ic_menu_search"
+                    app:startIconDrawable="@drawable/ic_search"
                     app:boxBackgroundColor="@color/surface_container_highest"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="2dp"

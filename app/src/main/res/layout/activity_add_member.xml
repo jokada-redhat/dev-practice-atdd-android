@@ -19,7 +19,7 @@
             android:background="@color/surface"
             app:title="@string/add_member_title"
             app:titleTextColor="@color/primary"
-            app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel" />
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:hint="@string/member_id_label"
-                        app:endIconDrawable="@android:drawable/ic_menu_info_details"
+                        app:endIconDrawable="@drawable/ic_search"
                         app:endIconMode="custom"
                         app:boxBackgroundColor="@color/surface_container_highest"
                         app:boxStrokeWidth="0dp"
@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="24dp"
                         android:hint="@string/member_name_label"
-                        app:endIconDrawable="@android:drawable/ic_menu_myplaces"
+                        app:endIconDrawable="@drawable/ic_person"
                         app:endIconMode="custom"
                         app:boxBackgroundColor="@color/surface_container_highest"
                         app:boxStrokeWidth="0dp"
@@ -119,7 +119,7 @@
                         android:text="@string/add_member_button"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:icon="@android:drawable/ic_input_add"
+                        app:icon="@drawable/ic_add"
                         app:iconGravity="end"
                         app:cornerRadius="28dp"
                         app:backgroundTint="@color/primary" />

@@ -19,7 +19,7 @@
             android:background="@color/surface_container_lowest"
             app:title="@string/member_list_title"
             app:titleTextColor="@color/primary"
-            app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel" />
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:visibility="gone"
-                app:startIconDrawable="@android:drawable/ic_menu_search"
+                app:startIconDrawable="@drawable/ic_search"
                 app:boxBackgroundColor="@color/surface_container_highest"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="2dp"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_add"
         android:contentDescription="@string/add_member"
         app:backgroundTint="@color/primary"
         app:tint="@color/on_primary" />

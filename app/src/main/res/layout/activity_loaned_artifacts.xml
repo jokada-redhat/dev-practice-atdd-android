@@ -18,7 +18,7 @@
             android:background="@color/surface"
             app:title="@string/loaned_artifacts_title"
             app:titleTextColor="@color/primary"
-            app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel" />
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
