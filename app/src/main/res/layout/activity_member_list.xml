@@ -35,11 +35,12 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Search Bar -->
+            <!-- Search Bar (TODO: 検索機能実装後に visible に変更) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:visibility="gone"
                 app:startIconDrawable="@android:drawable/ic_menu_search"
                 app:boxBackgroundColor="@color/surface_container_highest"
                 app:boxStrokeWidth="0dp"

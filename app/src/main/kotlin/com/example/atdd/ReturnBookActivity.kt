@@ -2,6 +2,7 @@ package com.example.atdd
 
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -94,28 +95,48 @@ class ReturnBookActivity : AppCompatActivity() {
 
     private fun setupReturnButton() {
         val buttonReturn = findViewById<MaterialButton>(R.id.buttonReturn)
-        val textStatusMessage = findViewById<TextView>(R.id.textStatusMessage)
+        val layoutSuccess = findViewById<LinearLayout>(R.id.layoutSuccess)
+        val buttonContinue = findViewById<MaterialButton>(R.id.buttonContinueReturn)
+        val buttonDone = findViewById<MaterialButton>(R.id.buttonReturnDone)
 
         buttonReturn.setOnClickListener {
             val book = foundBook
             val member = foundMember
 
             if (book == null || member == null) {
-                Toast.makeText(this, "書籍と会員の両方を入力してください", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.return_both_required, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val request = ReturnBookRequest(memberId = member.id, bookId = book.id)
             when (val result = returnBookUseCase.execute(request)) {
                 is ReturnBookResult.Success -> {
-                    textStatusMessage.visibility = View.VISIBLE
-                    Toast.makeText(this, R.string.return_success, Toast.LENGTH_SHORT).show()
-                    buttonReturn.postDelayed({ finish() }, 2000)
+                    buttonReturn.visibility = View.GONE
+                    layoutSuccess.visibility = View.VISIBLE
                 }
                 is ReturnBookResult.Failure -> {
                     Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+        buttonContinue.setOnClickListener {
+            resetForm()
+        }
+
+        buttonDone.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun resetForm() {
+        foundBook = null
+        foundMember = null
+        findViewById<TextInputEditText>(R.id.editIsbn).setText("")
+        findViewById<TextInputEditText>(R.id.editMemberId).setText("")
+        findViewById<MaterialCardView>(R.id.cardFoundBook).visibility = View.GONE
+        findViewById<MaterialCardView>(R.id.cardFoundMember).visibility = View.GONE
+        findViewById<MaterialButton>(R.id.buttonReturn).visibility = View.VISIBLE
+        findViewById<LinearLayout>(R.id.layoutSuccess).visibility = View.GONE
     }
 }

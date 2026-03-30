@@ -207,16 +207,46 @@
                 app:backgroundTint="@color/primary"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Status Message -->
-            <TextView
-                android:id="@+id/textStatusMessage"
+            <!-- Success Section (返却成功後に表示) -->
+            <LinearLayout
+                android:id="@+id/layoutSuccess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/return_status_message"
-                android:textSize="12sp"
-                android:textColor="@color/on_surface_variant"
-                android:gravity="center"
-                android:visibility="gone" />
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/return_status_message"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonContinueReturn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/return_continue"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="24dp"
+                    app:backgroundTint="@color/primary"
+                    android:layout_marginBottom="12dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonReturnDone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/return_done"
+                    android:textSize="14sp"
+                    app:cornerRadius="24dp"
+                    app:backgroundTint="@color/surface_container_high"
+                    android:textColor="@color/on_surface" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

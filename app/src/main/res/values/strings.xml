@@ -60,9 +60,12 @@
     <string name="member_id_entry">Member ID Entry</string>
     <string name="member_id_entry_hint">Enter member ID...</string>
     <string name="return_button">返却 Return</string>
-    <string name="return_status_message">Updating ledger. Archive record will be generated automatically.</string>
+    <string name="return_status_message">返却処理が完了しました。</string>
+    <string name="return_continue">続けて返却</string>
+    <string name="return_done">完了してホームに戻る</string>
     <string name="book_not_found">書籍が見つかりません</string>
     <string name="member_not_found">会員が見つかりません</string>
+    <string name="return_both_required">書籍と会員の両方を入力してください</string>
     <string name="return_success">返却が完了しました</string>
     <string name="due_date_label">Due Date</string>
 
@@ -75,7 +78,7 @@
     <string name="borrowed_artifact">Borrowed Artifact</string>
     <string name="return_due_date">Return Due Date</string>
     <string name="loan_duration">2 Week Period</string>
-    <string name="auto_redirect_message">15秒後に自動的にホームに戻ります。</string>
+    <string name="auto_redirect_message">%d秒後に自動的にホームに戻ります。</string>
     <string name="go_home_button">ホームに戻る</string>
 
     <!-- Loaned Artifacts Screen -->

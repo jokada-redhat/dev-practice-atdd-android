@@ -13,20 +13,34 @@ import java.time.format.DateTimeFormatter
 class LoanConfirmationActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
-    private val autoRedirectRunnable = Runnable { goHome() }
+    private var remainingSeconds = AUTO_REDIRECT_SECONDS
+    private lateinit var textAutoRedirect: TextView
+
+    private val countdownRunnable = object : Runnable {
+        override fun run() {
+            remainingSeconds--
+            if (remainingSeconds <= 0) {
+                goHome()
+            } else {
+                textAutoRedirect.text = getString(R.string.auto_redirect_message, remainingSeconds)
+                handler.postDelayed(this, 1000)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loan_confirmation)
 
+        textAutoRedirect = findViewById(R.id.textAutoRedirect)
         setupLoanDetails()
         setupGoHomeButton()
-        startAutoRedirect()
+        startCountdown()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(autoRedirectRunnable)
+        handler.removeCallbacks(countdownRunnable)
     }
 
     private fun setupLoanDetails() {
@@ -52,12 +66,13 @@ class LoanConfirmationActivity : AppCompatActivity() {
         }
     }
 
-    private fun startAutoRedirect() {
-        handler.postDelayed(autoRedirectRunnable, AUTO_REDIRECT_DELAY_MS)
+    private fun startCountdown() {
+        textAutoRedirect.text = getString(R.string.auto_redirect_message, remainingSeconds)
+        handler.postDelayed(countdownRunnable, 1000)
     }
 
     private fun goHome() {
-        handler.removeCallbacks(autoRedirectRunnable)
+        handler.removeCallbacks(countdownRunnable)
         startActivity(
             Intent(this, TopActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -66,6 +81,6 @@ class LoanConfirmationActivity : AppCompatActivity() {
     }
 
     private companion object {
-        const val AUTO_REDIRECT_DELAY_MS = 15_000L
+        const val AUTO_REDIRECT_SECONDS = 30
     }
 }
