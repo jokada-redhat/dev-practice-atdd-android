@@ -18,6 +18,11 @@ decisions:
 
 ## 変更履歴
 
+- **v4.1** (2026-03-30): イテレーション3 完了 + イテレーション4 途中。
+  Feature ファイル作成、ドメインモデル拡張、Repository/UseCase 実装、
+  ステップ定義実装、JVM テスト 29 件全緑。
+  UI Feature ファイル + LibraryUiSteps 作成、@login/@library タグ分離。
+  残: Activity Repository 統合 (I-1~I-4) + connectedDebugAndroidTest 緑化 (V-2)
 - **v4.0** (2026-03-30): 初版。Digital Archivist デザイン適用済み UI 実装完了。
   ATDD プロセスで機能実装を進める計画を策定。
 
@@ -161,20 +166,20 @@ decisions:
 
 | ID | タスク | 担当 | 工数 | 依存 | ステータス |
 |----|--------|------|------|------|-----------|
-| F-1 | member_management.feature 作成 | Dev-A | S | - | ⬜ 未着手 |
-| F-2 | book_catalog.feature 作成 | Dev-A | S | - | ⬜ 未着手 |
-| F-3 | borrowing_flow.feature 作成 | Dev-A | S | - | ⬜ 未着手 |
-| D-1 | ドメインモデル拡張 (Member, Book, Loan) | Dev-B | S | - | ⬜ 未着手 |
-| D-2 | Repository interface 定義 x3 | Dev-B | S | D-1 | ⬜ 未着手 |
-| D-3 | InMemory Repository 実装 x3 | Dev-B | M | D-2 | ⬜ 未着手 |
-| U-1 | RegisterMemberUseCase 実装 | Dev-C | S | D-3 | ⬜ 未着手 |
-| U-2 | ListMembersUseCase 実装 | Dev-C | S | D-3 | ⬜ 未着手 |
-| U-3 | SearchBooksUseCase 実装 | Dev-C | S | D-3 | ⬜ 未着手 |
-| U-4 | BorrowBookUseCase 実装 | Dev-C | M | D-3 | ⬜ 未着手 |
-| S-1 | MemberManagementSteps 実装 | Dev-A | M | F-1, U-1, U-2 | ⬜ 未着手 |
-| S-2 | BookCatalogSteps 実装 | Dev-A | M | F-2, U-3 | ⬜ 未着手 |
-| S-3 | BorrowingFlowSteps 実装 | Dev-A | M | F-3, U-4 | ⬜ 未着手 |
-| V-1 | JVM テスト全緑化 | 合流 | M | S-1, S-2, S-3 | ⬜ 未着手 |
+| F-1 | member_management.feature 作成 | Dev-A | S | - | ✅ 完了 |
+| F-2 | book_catalog.feature 作成 | Dev-A | S | - | ✅ 完了 |
+| F-3 | borrowing_flow.feature 作成 | Dev-A | S | - | ✅ 完了 |
+| D-1 | ドメインモデル拡張 (Member, Book, Loan) | Dev-B | S | - | ✅ 完了 |
+| D-2 | Repository interface 定義 x3 | Dev-B | S | D-1 | ✅ 完了 |
+| D-3 | InMemory Repository 実装 x3 | Dev-B | M | D-2 | ✅ 完了 |
+| U-1 | RegisterMemberUseCase 実装 | Dev-C | S | D-3 | ✅ 完了 |
+| U-2 | ListMembersUseCase 実装 | Dev-C | S | D-3 | ✅ 完了 |
+| U-3 | SearchBooksUseCase 実装 | Dev-C | S | D-3 | ✅ 完了 |
+| U-4 | BorrowBookUseCase + ReturnBookUseCase 実装 | Dev-C | M | D-3 | ✅ 完了 |
+| S-1 | MemberManagementSteps 実装 | Dev-A | M | F-1, U-1, U-2 | ✅ 完了 |
+| S-2 | BookCatalogSteps 実装 | Dev-A | M | F-2, U-3 | ✅ 完了 |
+| S-3 | BorrowingFlowSteps 実装 | Dev-A | M | F-3, U-4 | ✅ 完了 |
+| V-1 | JVM テスト全緑化 (29テスト, 0失敗) | 合流 | M | S-1, S-2, S-3 | ✅ 完了 |
 
 **工数見積**: S=1-2h, M=3-4h
 
@@ -184,19 +189,17 @@ decisions:
 
 | ID | タスク | 担当 | 工数 | 依存 | ステータス |
 |----|--------|------|------|------|-----------|
-| UI-1 | member_ui.feature 作成 | Dev-A | S | V-1 | ⬜ 未着手 |
-| UI-2 | book_catalog_ui.feature 作成 | Dev-A | S | V-1 | ⬜ 未着手 |
-| UI-3 | borrowing_flow_ui.feature 作成 | Dev-A | S | V-1 | ⬜ 未着手 |
-| UI-4 | MemberUiSteps 実装 | Dev-B | M | UI-1 | ⬜ 未着手 |
-| UI-5 | BookCatalogUiSteps 実装 | Dev-B | M | UI-2 | ⬜ 未着手 |
-| UI-6 | BorrowingFlowUiSteps 実装 | Dev-B | L | UI-3 | ⬜ 未着手 |
+| UI-1 | member_ui.feature 作成 | Dev-A | S | V-1 | ✅ 完了 |
+| UI-2 | book_catalog_ui.feature 作成 | Dev-A | S | V-1 | ✅ 完了 |
+| UI-3 | borrowing_flow_ui.feature 作成 | Dev-A | S | V-1 | ✅ 完了 |
+| UI-4~6 | LibraryUiSteps 統合実装 | Dev-B | M | UI-1~3 | ✅ 完了 |
+| T-1 | @login/@library タグ分離 | Dev-C | S | - | ✅ 完了 |
+| T-2 | espresso-contrib 依存追加 | Dev-C | S | - | ✅ 完了 |
 | I-1 | MemberListActivity Repository 統合 | Dev-C | S | UI-4 | ⬜ 未着手 |
 | I-2 | AddMemberActivity UseCase 統合 | Dev-C | S | UI-4 | ⬜ 未着手 |
 | I-3 | BookCatalogActivity Repository 統合 | Dev-C | S | UI-5 | ⬜ 未着手 |
 | I-4 | 貸し出しボタン UseCase 統合 | Dev-C | M | UI-6 | ⬜ 未着手 |
-| T-1 | TestHelper.injectRepositories 実装 | Dev-C | S | - | ⬜ 未着手 |
-| T-2 | TestDataFactory 実装 | Dev-C | S | - | ⬜ 未着手 |
-| V-2 | connectedDebugAndroidTest 緑化 | 合流 | L | I-1~I-4, T-1, T-2 | ⬜ 未着手 |
+| V-2 | connectedDebugAndroidTest 緑化 | 合流 | L | I-1~I-4 | ⬜ 未着手 |
 
 **工数見積**: S=1-2h, M=3-4h, L=5-6h
 
