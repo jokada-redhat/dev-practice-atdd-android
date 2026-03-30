@@ -15,9 +15,9 @@ class MemberListActivity : AppCompatActivity() {
 
     private lateinit var memberAdapter: MemberAdapter
     private val sampleMembers = listOf(
-        Member("DA-8821", "Taro Yamada", 2),
-        Member("DA-1156", "Marcus Thorne", 0),
-        Member("DA-5509", "Julian Chen", 1)
+        Member("DA-8821", "Taro Yamada", "taro@example.com", loanCount = 2),
+        Member("DA-1156", "Marcus Thorne", "marcus@example.com", loanCount = 0),
+        Member("DA-5509", "Julian Chen", "julian@example.com", loanCount = 1)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
