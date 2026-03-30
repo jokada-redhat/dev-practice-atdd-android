@@ -30,7 +30,7 @@ class LoginUiSteps {
     private lateinit var idlingResource: OkHttpIdlingResource
     private var scenario: ActivityScenario<LoginActivity>? = null
 
-    @Before
+    @Before("@login")
     fun setUp() {
         server = MockWebServer()
         server.start(0)
@@ -40,7 +40,7 @@ class LoginUiSteps {
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
-    @After
+    @After("@login")
     fun tearDown() {
         IdlingRegistry.getInstance().unregister(idlingResource)
         server.close()
