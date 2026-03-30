@@ -1,7 +1,9 @@
 package com.example.atdd
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,14 +52,18 @@ class LoanedArtifactsActivity : AppCompatActivity() {
         adapter.updateArtifacts(artifacts)
 
         val textCount = findViewById<TextView>(R.id.textArtifactCount)
-        val textEmpty = findViewById<TextView>(R.id.textEmptyState)
+        val layoutEmpty = findViewById<LinearLayout>(R.id.layoutEmptyState)
 
         textCount.text = getString(R.string.artifacts_in_circulation, artifacts.size)
 
         if (artifacts.isEmpty()) {
-            textEmpty.visibility = View.VISIBLE
+            layoutEmpty.visibility = View.VISIBLE
+            findViewById<com.google.android.material.button.MaterialButton>(R.id.buttonGoToBorrowing)
+                .setOnClickListener {
+                    startActivity(Intent(this, MemberListActivity::class.java))
+                }
         } else {
-            textEmpty.visibility = View.GONE
+            layoutEmpty.visibility = View.GONE
         }
     }
 }

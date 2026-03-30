@@ -48,8 +48,10 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 app:startIconDrawable="@drawable/ic_search"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_search"
                 app:boxBackgroundColor="@color/surface_container_highest"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="2dp"
@@ -63,7 +65,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/isbn_code_hint"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,8 +123,10 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 app:startIconDrawable="@drawable/ic_person"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_search"
                 app:boxBackgroundColor="@color/surface_container_highest"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="2dp"
@@ -134,7 +140,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/member_id_entry_hint"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.atdd.adapter.BookAdapter
@@ -65,24 +66,7 @@ class BookCatalogActivity : AppCompatActivity() {
 
         bookAdapter = BookAdapter(allBooks) { book ->
             if (book.isAvailable) {
-                val request = BorrowBookRequest(memberId = selectedMemberId, bookId = book.id)
-                when (val result = borrowBookUseCase.execute(request)) {
-                    is BorrowBookResult.Success -> {
-                        // 貸し出し確認画面へ遷移
-                        val confirmIntent = Intent(this, LoanConfirmationActivity::class.java).apply {
-                            putExtra("bookTitle", book.title)
-                            putExtra("bookAuthor", book.author)
-                            putExtra("memberName", selectedMemberName)
-                            putExtra("memberId", selectedMemberId)
-                        }
-                        startActivity(confirmIntent)
-                        // リスト更新
-                        bookAdapter.updateBooks(app.bookRepository.findAll())
-                    }
-                    is BorrowBookResult.Failure -> {
-                        Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
-                    }
-                }
+                showBorrowConfirmDialog(book)
             }
         }
 
@@ -113,6 +97,36 @@ class BookCatalogActivity : AppCompatActivity() {
         buttonBorrowed.setOnClickListener {
             setActiveButton(buttonBorrowed, buttonAll, buttonAvailable)
             bookAdapter.updateBooks(app.bookRepository.filterByStatus(BookStatus.BORROWED))
+        }
+    }
+
+    private fun showBorrowConfirmDialog(book: com.example.atdd.model.Book) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.borrow_confirm_title)
+            .setMessage(getString(R.string.borrow_confirm_message, book.title, selectedMemberName))
+            .setPositiveButton(R.string.borrow_confirm_yes) { _, _ ->
+                executeBorrow(book)
+            }
+            .setNegativeButton(R.string.borrow_confirm_cancel, null)
+            .show()
+    }
+
+    private fun executeBorrow(book: com.example.atdd.model.Book) {
+        val request = BorrowBookRequest(memberId = selectedMemberId, bookId = book.id)
+        when (val result = borrowBookUseCase.execute(request)) {
+            is BorrowBookResult.Success -> {
+                val confirmIntent = Intent(this, LoanConfirmationActivity::class.java).apply {
+                    putExtra("bookTitle", book.title)
+                    putExtra("bookAuthor", book.author)
+                    putExtra("memberName", selectedMemberName)
+                    putExtra("memberId", selectedMemberId)
+                }
+                startActivity(confirmIntent)
+                bookAdapter.updateBooks(app.bookRepository.findAll())
+            }
+            is BorrowBookResult.Failure -> {
+                Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

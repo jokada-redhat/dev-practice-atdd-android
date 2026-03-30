@@ -15,6 +15,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class ReturnBookActivity : AppCompatActivity() {
 
@@ -45,51 +46,71 @@ class ReturnBookActivity : AppCompatActivity() {
 
     private fun setupIsbnEntry() {
         val editIsbn = findViewById<TextInputEditText>(R.id.editIsbn)
-        val cardFoundBook = findViewById<MaterialCardView>(R.id.cardFoundBook)
+        val isbnLayout = editIsbn.parent.parent as TextInputLayout
 
-        editIsbn.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                val isbn = editIsbn.text.toString().trim()
-                if (isbn.isNotEmpty()) {
-                    val books = app.bookRepository.search(isbn)
-                    foundBook = books.firstOrNull()
-                    if (foundBook != null) {
-                        findViewById<TextView>(R.id.textFoundBookTitle).text = foundBook!!.title
-                        findViewById<TextView>(R.id.textFoundBookAuthor).text = foundBook!!.author
-                        cardFoundBook.visibility = View.VISIBLE
-                    } else {
-                        cardFoundBook.visibility = View.GONE
-                        Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+        // endIcon（検索アイコン）タップで検索
+        isbnLayout.setEndIconOnClickListener { searchBook() }
+
+        // IME の Search アクションで検索
+        editIsbn.setOnEditorActionListener { _, _, _ ->
+            searchBook()
+            true
+        }
+    }
+
+    private fun searchBook() {
+        val editIsbn = findViewById<TextInputEditText>(R.id.editIsbn)
+        val cardFoundBook = findViewById<MaterialCardView>(R.id.cardFoundBook)
+        val isbn = editIsbn.text.toString().trim()
+
+        if (isbn.isEmpty()) return
+
+        val books = app.bookRepository.search(isbn)
+        foundBook = books.firstOrNull()
+        if (foundBook != null) {
+            findViewById<TextView>(R.id.textFoundBookTitle).text = foundBook!!.title
+            findViewById<TextView>(R.id.textFoundBookAuthor).text = foundBook!!.author
+            cardFoundBook.visibility = View.VISIBLE
+        } else {
+            cardFoundBook.visibility = View.GONE
+            Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setupMemberIdEntry() {
         val editMemberId = findViewById<TextInputEditText>(R.id.editMemberId)
-        val cardFoundMember = findViewById<MaterialCardView>(R.id.cardFoundMember)
+        val memberIdLayout = editMemberId.parent.parent as TextInputLayout
 
-        editMemberId.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                val memberId = editMemberId.text.toString().trim()
-                if (memberId.isNotEmpty()) {
-                    foundMember = app.memberRepository.findById(memberId)
-                    if (foundMember != null) {
-                        val initials = foundMember!!.name.split(" ")
-                            .mapNotNull { it.firstOrNull()?.uppercase() }
-                            .joinToString("")
-                        findViewById<TextView>(R.id.textMemberInitials).text = initials
-                        findViewById<TextView>(R.id.textFoundMemberName).text = foundMember!!.name
-                        findViewById<TextView>(R.id.textFoundMemberId).text =
-                            getString(R.string.member_id_prefix, foundMember!!.id)
-                        cardFoundMember.visibility = View.VISIBLE
-                    } else {
-                        cardFoundMember.visibility = View.GONE
-                        Toast.makeText(this, R.string.member_not_found, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+        // endIcon（検索アイコン）タップで検索
+        memberIdLayout.setEndIconOnClickListener { searchMember() }
+
+        // IME の Search アクションで検索
+        editMemberId.setOnEditorActionListener { _, _, _ ->
+            searchMember()
+            true
+        }
+    }
+
+    private fun searchMember() {
+        val editMemberId = findViewById<TextInputEditText>(R.id.editMemberId)
+        val cardFoundMember = findViewById<MaterialCardView>(R.id.cardFoundMember)
+        val memberId = editMemberId.text.toString().trim()
+
+        if (memberId.isEmpty()) return
+
+        foundMember = app.memberRepository.findById(memberId)
+        if (foundMember != null) {
+            val initials = foundMember!!.name.split(" ")
+                .mapNotNull { it.firstOrNull()?.uppercase() }
+                .joinToString("")
+            findViewById<TextView>(R.id.textMemberInitials).text = initials
+            findViewById<TextView>(R.id.textFoundMemberName).text = foundMember!!.name
+            findViewById<TextView>(R.id.textFoundMemberId).text =
+                getString(R.string.member_id_prefix, foundMember!!.id)
+            cardFoundMember.visibility = View.VISIBLE
+        } else {
+            cardFoundMember.visibility = View.GONE
+            Toast.makeText(this, R.string.member_not_found, Toast.LENGTH_SHORT).show()
         }
     }
 

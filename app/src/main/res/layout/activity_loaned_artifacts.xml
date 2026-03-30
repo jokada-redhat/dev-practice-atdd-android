@@ -44,16 +44,43 @@
                 android:layout_marginBottom="20dp" />
 
             <!-- Empty State -->
-            <TextView
-                android:id="@+id/textEmptyState"
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/no_loaned_artifacts"
-                android:textSize="16sp"
-                android:textColor="@color/on_surface_variant"
+                android:orientation="vertical"
                 android:gravity="center"
                 android:padding="48dp"
-                android:visibility="gone" />
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/ic_menu_book"
+                    android:tint="@color/outline"
+                    android:contentDescription="@string/no_loaned_artifacts" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_loaned_artifacts"
+                    android:textSize="16sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:gravity="center"
+                    android:layout_marginBottom="24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonGoToBorrowing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/go_to_borrowing"
+                    app:icon="@drawable/ic_menu_book"
+                    app:iconGravity="textStart"
+                    app:cornerRadius="24dp"
+                    app:backgroundTint="@color/primary" />
+
+            </LinearLayout>
 
             <!-- Loan List -->
             <androidx.recyclerview.widget.RecyclerView
