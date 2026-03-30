@@ -68,11 +68,14 @@ class BookCatalogActivity : AppCompatActivity() {
                 val request = BorrowBookRequest(memberId = selectedMemberId, bookId = book.id)
                 when (val result = borrowBookUseCase.execute(request)) {
                     is BorrowBookResult.Success -> {
-                        Toast.makeText(
-                            this,
-                            "${book.title} ${getString(R.string.book_borrowed_success)}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // 貸し出し確認画面へ遷移
+                        val confirmIntent = Intent(this, LoanConfirmationActivity::class.java).apply {
+                            putExtra("bookTitle", book.title)
+                            putExtra("bookAuthor", book.author)
+                            putExtra("memberName", selectedMemberName)
+                            putExtra("memberId", selectedMemberId)
+                        }
+                        startActivity(confirmIntent)
                         // リスト更新
                         bookAdapter.updateBooks(app.bookRepository.findAll())
                     }

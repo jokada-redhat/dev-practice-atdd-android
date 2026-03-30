@@ -30,6 +30,15 @@
         <activity
             android:name=".BookCatalogActivity"
             android:exported="false" />
+        <activity
+            android:name=".ReturnBookActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoanConfirmationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoanedArtifactsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

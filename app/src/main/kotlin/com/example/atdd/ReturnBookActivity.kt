@@ -1,0 +1,121 @@
+package com.example.atdd
+
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.atdd.loan.ReturnBookRequest
+import com.example.atdd.loan.ReturnBookResult
+import com.example.atdd.loan.ReturnBookUseCase
+import com.example.atdd.model.Book
+import com.example.atdd.model.Member
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textfield.TextInputEditText
+
+class ReturnBookActivity : AppCompatActivity() {
+
+    private val app by lazy { application as AtddApplication }
+    private val returnBookUseCase by lazy {
+        ReturnBookUseCase(app.loanRepository, app.bookRepository, app.memberRepository)
+    }
+
+    private var foundBook: Book? = null
+    private var foundMember: Member? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_return_book)
+
+        setupToolbar()
+        setupIsbnEntry()
+        setupMemberIdEntry()
+        setupReturnButton()
+    }
+
+    private fun setupToolbar() {
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    private fun setupIsbnEntry() {
+        val editIsbn = findViewById<TextInputEditText>(R.id.editIsbn)
+        val cardFoundBook = findViewById<MaterialCardView>(R.id.cardFoundBook)
+
+        editIsbn.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val isbn = editIsbn.text.toString().trim()
+                if (isbn.isNotEmpty()) {
+                    val books = app.bookRepository.search(isbn)
+                    foundBook = books.firstOrNull()
+                    if (foundBook != null) {
+                        findViewById<TextView>(R.id.textFoundBookTitle).text = foundBook!!.title
+                        findViewById<TextView>(R.id.textFoundBookAuthor).text = foundBook!!.author
+                        cardFoundBook.visibility = View.VISIBLE
+                    } else {
+                        cardFoundBook.visibility = View.GONE
+                        Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupMemberIdEntry() {
+        val editMemberId = findViewById<TextInputEditText>(R.id.editMemberId)
+        val cardFoundMember = findViewById<MaterialCardView>(R.id.cardFoundMember)
+
+        editMemberId.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val memberId = editMemberId.text.toString().trim()
+                if (memberId.isNotEmpty()) {
+                    foundMember = app.memberRepository.findById(memberId)
+                    if (foundMember != null) {
+                        val initials = foundMember!!.name.split(" ")
+                            .mapNotNull { it.firstOrNull()?.uppercase() }
+                            .joinToString("")
+                        findViewById<TextView>(R.id.textMemberInitials).text = initials
+                        findViewById<TextView>(R.id.textFoundMemberName).text = foundMember!!.name
+                        findViewById<TextView>(R.id.textFoundMemberId).text =
+                            getString(R.string.member_id_prefix, foundMember!!.id)
+                        cardFoundMember.visibility = View.VISIBLE
+                    } else {
+                        cardFoundMember.visibility = View.GONE
+                        Toast.makeText(this, R.string.member_not_found, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupReturnButton() {
+        val buttonReturn = findViewById<MaterialButton>(R.id.buttonReturn)
+        val textStatusMessage = findViewById<TextView>(R.id.textStatusMessage)
+
+        buttonReturn.setOnClickListener {
+            val book = foundBook
+            val member = foundMember
+
+            if (book == null || member == null) {
+                Toast.makeText(this, "書籍と会員の両方を入力してください", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val request = ReturnBookRequest(memberId = member.id, bookId = book.id)
+            when (val result = returnBookUseCase.execute(request)) {
+                is ReturnBookResult.Success -> {
+                    textStatusMessage.visibility = View.VISIBLE
+                    Toast.makeText(this, R.string.return_success, Toast.LENGTH_SHORT).show()
+                    buttonReturn.postDelayed({ finish() }, 2000)
+                }
+                is ReturnBookResult.Failure -> {
+                    Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+}

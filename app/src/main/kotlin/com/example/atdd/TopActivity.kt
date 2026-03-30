@@ -2,9 +2,7 @@ package com.example.atdd
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.atdd.session.SessionManager
 import com.example.atdd.session.SharedPreferencesSessionRepository
@@ -52,11 +50,11 @@ class TopActivity : AppCompatActivity() {
         }
 
         findViewById<MaterialCardView>(R.id.cardReturns).setOnClickListener {
-            Toast.makeText(this, R.string.action_returns, Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ReturnBookActivity::class.java))
         }
 
         findViewById<MaterialCardView>(R.id.cardCheckStatus).setOnClickListener {
-            Toast.makeText(this, R.string.action_check_status, Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoanedArtifactsActivity::class.java))
         }
     }
 

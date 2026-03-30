@@ -52,4 +52,36 @@
     <string name="borrow_button">Borrow</string>
     <string name="active_selection">Active Selection</string>
     <string name="book_borrowed_success">Book borrowed successfully</string>
+
+    <!-- Return Books Screen -->
+    <string name="return_books_title">Return Books</string>
+    <string name="isbn_code_entry">ISBN Code Entry</string>
+    <string name="isbn_code_hint">Scan or enter ISBN...</string>
+    <string name="member_id_entry">Member ID Entry</string>
+    <string name="member_id_entry_hint">Enter member ID...</string>
+    <string name="return_button">返却 Return</string>
+    <string name="return_status_message">Updating ledger. Archive record will be generated automatically.</string>
+    <string name="book_not_found">書籍が見つかりません</string>
+    <string name="member_not_found">会員が見つかりません</string>
+    <string name="return_success">返却が完了しました</string>
+    <string name="due_date_label">Due Date</string>
+
+    <!-- Loan Confirmation Screen -->
+    <string name="loan_confirmed_title">Loan Confirmed</string>
+    <string name="loan_confirmed_heading">貸し出しが完了しました</string>
+    <string name="loan_confirmed_subtitle">Loan Successful!</string>
+    <string name="current_transaction">Current Transaction</string>
+    <string name="loan_summary">借用情報の概要</string>
+    <string name="borrowed_artifact">Borrowed Artifact</string>
+    <string name="return_due_date">Return Due Date</string>
+    <string name="loan_duration">2 Week Period</string>
+    <string name="auto_redirect_message">15秒後に自動的にホームに戻ります。</string>
+    <string name="go_home_button">ホームに戻る</string>
+
+    <!-- Loaned Artifacts Screen -->
+    <string name="loaned_artifacts_title">Currently Loaned Artifacts</string>
+    <string name="artifacts_in_circulation">%d Artifacts in circulation</string>
+    <string name="borrower_label">Borrower</string>
+    <string name="artifact_id_label">Artifact ID</string>
+    <string name="no_loaned_artifacts">現在貸し出し中の書籍はありません</string>
 </resources>
