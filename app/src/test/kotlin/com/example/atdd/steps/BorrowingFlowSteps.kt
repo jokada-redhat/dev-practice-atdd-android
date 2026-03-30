@@ -62,8 +62,8 @@ class BorrowingFlowSteps {
         memberRepository.save(member)
     }
 
-    @And("会員 {string} の貸出冊数は {int} である")
-    fun memberLoanCountIs(memberId: String, loanCount: Int) {
+    @And("会員 {string} の現在の貸出冊数は {int} である")
+    fun memberCurrentLoanCountIs(memberId: String, loanCount: Int) {
         val member = memberRepository.findById(memberId)
         assertNotNull("会員が見つかりません", member)
         assertEquals("貸出冊数が一致しません", loanCount, member?.loanCount)

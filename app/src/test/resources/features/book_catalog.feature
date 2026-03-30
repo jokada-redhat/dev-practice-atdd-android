@@ -38,7 +38,7 @@ Feature: 書籍カタログ
       | The Left Hand of Darkness    | Ursula K. Le Guin   | 978-0441478125 | 1969            | AVAILABLE |
     When 書籍を "Neuromancer" で検索する
     Then 検索結果に 1 件の書籍が含まれている
-    And 検索結果に "Neuromancer" が含まれている
+    And 書籍検索結果に "Neuromancer" が含まれている
 
   Scenario: 書籍を著者名で検索する
     Given 以下の書籍が登録されている:
@@ -47,4 +47,4 @@ Feature: 書籍カタログ
       | The Left Hand of Darkness    | Ursula K. Le Guin   | 978-0441478125 | 1969            | AVAILABLE |
     When 書籍を "Borges" で検索する
     Then 検索結果に 1 件の書籍が含まれている
-    And 検索結果に "The Infinite Library" が含まれている
+    And 書籍検索結果に "The Infinite Library" が含まれている

@@ -25,7 +25,7 @@ Feature: 会員管理
       | DA-5509  | Julian Chen  | julian@example.com | 1         |
     When 会員を "Marcus" で検索する
     Then 検索結果に 1 件の会員が含まれている
-    And 検索結果に "Marcus Thorne" が含まれている
+    And 会員検索結果に "Marcus Thorne" が含まれている
 
   Scenario: メールアドレスが重複している場合は登録できない
     Given 会員 "山田太郎" がメールアドレス "taro@example.com" で既に登録されている

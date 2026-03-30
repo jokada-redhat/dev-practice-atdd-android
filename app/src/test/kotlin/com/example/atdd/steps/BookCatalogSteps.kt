@@ -90,8 +90,8 @@ class BookCatalogSteps {
         assertEquals("検索結果数が一致しません", count, searchResults.size)
     }
 
-    @And("検索結果に {string} が含まれている")
-    fun searchResultsContain(title: String) {
+    @And("書籍検索結果に {string} が含まれている")
+    fun bookSearchResultsContain(title: String) {
         assertTrue(
             "検索結果に $title が含まれているべき",
             searchResults.any { it.title == title }

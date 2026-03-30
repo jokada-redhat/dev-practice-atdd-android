@@ -102,8 +102,8 @@ class MemberManagementSteps {
         assertEquals("検索結果数が一致しません", count, searchResults.size)
     }
 
-    @And("検索結果に {string} が含まれている")
-    fun searchResultsContain(name: String) {
+    @And("会員検索結果に {string} が含まれている")
+    fun memberSearchResultsContain(name: String) {
         assertTrue(
             "検索結果に $name が含まれているべき",
             searchResults.any { it.name == name }
