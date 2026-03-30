@@ -2,11 +2,14 @@ package com.example.atdd
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.MenuItem
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.atdd.session.SessionManager
 import com.example.atdd.session.SharedPreferencesSessionRepository
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.card.MaterialCardView
 
 class TopActivity : AppCompatActivity() {
 
@@ -18,16 +21,51 @@ class TopActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_top)
 
+        setupToolbar()
+        setupDisplayName()
+        setupActionCards()
+    }
+
+    private fun setupToolbar() {
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_logout -> {
+                    handleLogout()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun setupDisplayName() {
         findViewById<TextView>(R.id.textDisplayName).text =
             sessionManager.getDisplayName()
+    }
 
-        findViewById<Button>(R.id.buttonLogout).setOnClickListener {
-            sessionManager.clearSession()
-
-            startActivity(
-                Intent(this, LoginActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
+    private fun setupActionCards() {
+        findViewById<MaterialCardView>(R.id.cardBorrowing).setOnClickListener {
+            startActivity(Intent(this, MemberListActivity::class.java))
         }
+
+        findViewById<MaterialCardView>(R.id.cardReturns).setOnClickListener {
+            Toast.makeText(this, R.string.action_returns, Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<MaterialCardView>(R.id.cardCheckStatus).setOnClickListener {
+            Toast.makeText(this, R.string.action_check_status, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun handleLogout() {
+        sessionManager.clearSession()
+
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
     }
 }
