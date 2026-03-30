@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@color/surface_container_lowest"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Title and Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="12dp">
+
+                <TextView
+                    android:id="@+id/textBookTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/textBookAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textBookStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1"
+                android:background="@drawable/status_badge_background" />
+
+        </LinearLayout>
+
+        <!-- ISBN and Publication -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/isbn_label"
+                    android:textSize="10sp"
+                    android:textColor="@color/outline"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/textBookIsbn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/publication_label"
+                    android:textSize="10sp"
+                    android:textColor="@color/outline"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/textBookYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Borrow Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonBorrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/borrow_button"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconGravity="textStart"
+            app:cornerRadius="24dp"
+            app:backgroundTint="@color/primary" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
