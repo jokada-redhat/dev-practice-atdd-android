@@ -38,9 +38,21 @@ class LoanConfirmationActivity : AppCompatActivity() {
         startCountdown()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         handler.removeCallbacks(countdownRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (remainingSeconds > 0) {
+            startCountdown()
+        }
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacks(countdownRunnable)
+        super.onDestroy()
     }
 
     private fun setupLoanDetails() {

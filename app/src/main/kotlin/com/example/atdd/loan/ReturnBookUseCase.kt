@@ -1,5 +1,6 @@
 package com.example.atdd.loan
 
+import android.util.Log
 import com.example.atdd.book.BookRepository
 import com.example.atdd.member.MemberRepository
 import com.example.atdd.model.BookStatus
@@ -21,6 +22,9 @@ class ReturnBookUseCase(
     private val bookRepository: BookRepository,
     private val memberRepository: MemberRepository
 ) {
+    private companion object {
+        const val TAG = "ReturnBookUseCase"
+    }
     fun execute(request: ReturnBookRequest): ReturnBookResult {
         // 会員の存在確認
         val member = memberRepository.findById(request.memberId)
@@ -66,7 +70,10 @@ class ReturnBookUseCase(
         if (updateMemberResult.isFailure) {
             // ロールバック
             loanRepository.save(activeLoan)
-            bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)
+            val rollback = bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)
+            if (rollback.isFailure) {
+                Log.e(TAG, "ロールバック失敗: 書籍ステータス不整合の可能性", rollback.exceptionOrNull())
+            }
             return ReturnBookResult.Failure(
                 updateMemberResult.exceptionOrNull()?.message ?: "会員情報の更新に失敗しました"
             )

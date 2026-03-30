@@ -54,8 +54,18 @@ class RegisterMemberUseCase(
     }
 
     private fun generateMemberId(): String {
-        val randomNumber = (1000..9999).random()
-        return "DA-$randomNumber"
+        repeat(MAX_ID_GENERATION_ATTEMPTS) {
+            val randomNumber = (1000..9999).random()
+            val id = "DA-$randomNumber"
+            if (memberRepository.findById(id) == null) {
+                return id
+            }
+        }
+        return "DA-${System.currentTimeMillis() % 100000}"
+    }
+
+    private companion object {
+        const val MAX_ID_GENERATION_ATTEMPTS = 10
     }
 
     private fun isValidEmail(email: String): Boolean {
