@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.atdd.adapter.BookAdapter
+import com.example.atdd.loan.BorrowBookRequest
+import com.example.atdd.loan.BorrowBookResult
+import com.example.atdd.loan.BorrowBookUseCase
 import com.example.atdd.model.Book
 import com.example.atdd.model.BookStatus
 import com.google.android.material.appbar.MaterialToolbar
@@ -16,21 +19,20 @@ import com.google.android.material.button.MaterialButton
 class BookCatalogActivity : AppCompatActivity() {
 
     private lateinit var bookAdapter: BookAdapter
-    private val allBooks = listOf(
-        Book("1", "The Infinite Library", "Jorge Luis Borges", "978-0142437889", "1941", BookStatus.AVAILABLE),
-        Book("2", "Neuromancer", "William Gibson", "978-0441569595", "1984", BookStatus.BORROWED),
-        Book("3", "The Left Hand of Darkness", "Ursula K. Le Guin", "978-0441478125", "1969", BookStatus.AVAILABLE),
-        Book("4", "Foundation", "Isaac Asimov", "978-0553293357", "1951", BookStatus.AVAILABLE)
-    )
-
-    private var selectedMemberName: String = "Taro Yamada" // デフォルト値
+    private val app by lazy { application as AtddApplication }
+    private val borrowBookUseCase by lazy {
+        BorrowBookUseCase(app.loanRepository, app.bookRepository, app.memberRepository)
+    }
+    private var selectedMemberId: String = ""
+    private var selectedMemberName: String = "Taro Yamada"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_catalog)
 
-        // Intentから選択されたメンバー名を取得
+        // Intentから選択されたメンバー情報を取得
         selectedMemberName = intent.getStringExtra("memberName") ?: "Taro Yamada"
+        selectedMemberId = intent.getStringExtra("memberId") ?: ""
 
         setupToolbar()
         setupActiveSelection()
@@ -59,14 +61,25 @@ class BookCatalogActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewBooks)
+        val allBooks = app.bookRepository.findAll()
 
         bookAdapter = BookAdapter(allBooks) { book ->
             if (book.isAvailable) {
-                Toast.makeText(
-                    this,
-                    "${book.title} ${getString(R.string.book_borrowed_success)}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val request = BorrowBookRequest(memberId = selectedMemberId, bookId = book.id)
+                when (val result = borrowBookUseCase.execute(request)) {
+                    is BorrowBookResult.Success -> {
+                        Toast.makeText(
+                            this,
+                            "${book.title} ${getString(R.string.book_borrowed_success)}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // リスト更新
+                        bookAdapter.updateBooks(app.bookRepository.findAll())
+                    }
+                    is BorrowBookResult.Failure -> {
+                        Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -86,17 +99,17 @@ class BookCatalogActivity : AppCompatActivity() {
 
         buttonAll.setOnClickListener {
             setActiveButton(buttonAll, buttonAvailable, buttonBorrowed)
-            bookAdapter.updateBooks(allBooks)
+            bookAdapter.updateBooks(app.bookRepository.findAll())
         }
 
         buttonAvailable.setOnClickListener {
             setActiveButton(buttonAvailable, buttonAll, buttonBorrowed)
-            bookAdapter.updateBooks(allBooks.filter { it.isAvailable })
+            bookAdapter.updateBooks(app.bookRepository.filterByStatus(BookStatus.AVAILABLE))
         }
 
         buttonBorrowed.setOnClickListener {
             setActiveButton(buttonBorrowed, buttonAll, buttonAvailable)
-            bookAdapter.updateBooks(allBooks.filter { !it.isAvailable })
+            bookAdapter.updateBooks(app.bookRepository.filterByStatus(BookStatus.BORROWED))
         }
     }
 

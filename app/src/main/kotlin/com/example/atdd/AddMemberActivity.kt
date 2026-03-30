@@ -3,18 +3,22 @@ package com.example.atdd
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.atdd.member.RegisterMemberRequest
+import com.example.atdd.member.RegisterMemberResult
+import com.example.atdd.member.RegisterMemberUseCase
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import kotlin.random.Random
 
 class AddMemberActivity : AppCompatActivity() {
 
     private lateinit var textInputLayoutMemberId: TextInputLayout
     private lateinit var editMemberId: TextInputEditText
     private lateinit var checkBoxAutoGenerate: MaterialCheckBox
+    private val app by lazy { application as AtddApplication }
+    private val registerMemberUseCase by lazy { RegisterMemberUseCase(app.memberRepository) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,46 +56,25 @@ class AddMemberActivity : AppCompatActivity() {
 
         buttonAddMember.setOnClickListener {
             val memberName = editMemberName.text.toString().trim()
+            val email = "" // 将来のフォーム拡張用
 
-            // 自動生成がONの場合はIDは不要
-            if (checkBoxAutoGenerate.isChecked) {
-                if (memberName.isEmpty()) {
-                    editMemberName.error = "Member name is required"
-                } else {
-                    val generatedId = generateMemberId()
+            val request = RegisterMemberRequest(name = memberName, email = email)
+            when (val result = registerMemberUseCase.execute(request)) {
+                is RegisterMemberResult.Success -> {
                     Toast.makeText(
                         this,
-                        getString(R.string.member_added_success) + " (ID: $generatedId)",
+                        getString(R.string.member_added_success) + " (ID: ${result.member.id})",
                         Toast.LENGTH_LONG
                     ).show()
                     finish()
                 }
-            } else {
-                // 手動入力の場合はIDも必須
-                val memberId = editMemberId.text.toString().trim()
-
-                when {
-                    memberId.isEmpty() -> {
-                        editMemberId.error = "Member ID is required"
-                    }
-                    memberName.isEmpty() -> {
-                        editMemberName.error = "Member name is required"
-                    }
-                    else -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.member_added_success),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        finish()
-                    }
+                is RegisterMemberResult.Failure -> {
+                    editMemberName.error = result.errorMessage
+                }
+                is RegisterMemberResult.ValidationError -> {
+                    editMemberName.error = result.message
                 }
             }
         }
-    }
-
-    private fun generateMemberId(): String {
-        val randomNumber = Random.nextInt(1000, 9999)
-        return "DA-$randomNumber"
     }
 }

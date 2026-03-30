@@ -14,11 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MemberListActivity : AppCompatActivity() {
 
     private lateinit var memberAdapter: MemberAdapter
-    private val sampleMembers = listOf(
-        Member("DA-8821", "Taro Yamada", "taro@example.com", loanCount = 2),
-        Member("DA-1156", "Marcus Thorne", "marcus@example.com", loanCount = 0),
-        Member("DA-5509", "Julian Chen", "julian@example.com", loanCount = 1)
-    )
+    private val app by lazy { application as AtddApplication }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +23,11 @@ class MemberListActivity : AppCompatActivity() {
         setupToolbar()
         setupRecyclerView()
         setupFab()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        memberAdapter.updateMembers(app.memberRepository.findAll())
     }
 
     private fun setupToolbar() {
@@ -42,10 +43,11 @@ class MemberListActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMembers)
 
-        memberAdapter = MemberAdapter(sampleMembers) { member ->
+        memberAdapter = MemberAdapter(app.memberRepository.findAll()) { member ->
             // メンバー選択時に書籍一覧画面に遷移
             val intent = Intent(this, BookCatalogActivity::class.java).apply {
                 putExtra("memberName", member.name)
+                putExtra("memberId", member.id)
             }
             startActivity(intent)
         }
