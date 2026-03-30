@@ -49,6 +49,14 @@ class LoginSteps {
             loginUseCase = LoginUseCase(dummyRepository)
         }
         loginResult = loginUseCase.execute(LoginRequest(email, password))
+
+        // エラーメッセージを共通変数に設定
+        when (loginResult) {
+            is LoginResult.Failure -> {
+                CommonSteps.lastErrorMessage = (loginResult as LoginResult.Failure).errorMessage
+            }
+            else -> {}
+        }
     }
 
     @Then("ログインが成功する")
@@ -74,11 +82,6 @@ class LoginSteps {
         assertTrue("トークンが空であってはならない", success.token.isNotBlank())
     }
 
-    @And("エラーメッセージ {string} が返される")
-    fun errorMessageIsReturned(expectedMessage: String) {
-        val failure = loginResult as LoginResult.Failure
-        assertEquals(expectedMessage, failure.errorMessage)
-    }
 
     @And("表示名 {string} が返される")
     fun displayNameIsReturned(expectedDisplayName: String) {

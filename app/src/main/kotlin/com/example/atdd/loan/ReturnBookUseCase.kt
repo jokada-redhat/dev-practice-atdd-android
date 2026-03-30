@@ -41,39 +41,35 @@ class ReturnBookUseCase(
 
         // 返却処理
         val returnedDate = LocalDate.now()
-        val returnedLoan = when (val result = loanRepository.returnBook(activeLoan.id, returnedDate)) {
-            is Result.Success -> result.getOrThrow()
-            is Result.Failure -> {
-                return ReturnBookResult.Failure(
-                    result.exceptionOrNull()?.message ?: "返却処理に失敗しました"
-                )
-            }
+        val returnResult = loanRepository.returnBook(activeLoan.id, returnedDate)
+        val returnedLoan = if (returnResult.isSuccess) {
+            returnResult.getOrThrow()
+        } else {
+            return ReturnBookResult.Failure(
+                returnResult.exceptionOrNull()?.message ?: "返却処理に失敗しました"
+            )
         }
 
         // 書籍のステータスを更新
-        when (val updateResult = bookRepository.updateStatus(request.bookId, BookStatus.AVAILABLE)) {
-            is Result.Failure -> {
-                // ロールバック
-                loanRepository.save(activeLoan)
-                return ReturnBookResult.Failure(
-                    updateResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
-                )
-            }
-            else -> {}
+        val updateBookResult = bookRepository.updateStatus(request.bookId, BookStatus.AVAILABLE)
+        if (updateBookResult.isFailure) {
+            // ロールバック
+            loanRepository.save(activeLoan)
+            return ReturnBookResult.Failure(
+                updateBookResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
+            )
         }
 
         // 会員の貸出冊数を更新
         val newLoanCount = maxOf(0, member.loanCount - 1)
-        when (val updateResult = memberRepository.updateLoanCount(request.memberId, newLoanCount)) {
-            is Result.Failure -> {
-                // ロールバック
-                loanRepository.save(activeLoan)
-                bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)
-                return ReturnBookResult.Failure(
-                    updateResult.exceptionOrNull()?.message ?: "会員情報の更新に失敗しました"
-                )
-            }
-            else -> {}
+        val updateMemberResult = memberRepository.updateLoanCount(request.memberId, newLoanCount)
+        if (updateMemberResult.isFailure) {
+            // ロールバック
+            loanRepository.save(activeLoan)
+            bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)
+            return ReturnBookResult.Failure(
+                updateMemberResult.exceptionOrNull()?.message ?: "会員情報の更新に失敗しました"
+            )
         }
 
         return ReturnBookResult.Success(returnedLoan)

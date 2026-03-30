@@ -43,9 +43,11 @@ class RegisterMemberUseCase(
             loanCount = 0
         )
 
-        return when (val result = memberRepository.save(member)) {
-            is Result.Success -> RegisterMemberResult.Success(result.getOrThrow())
-            is Result.Failure -> RegisterMemberResult.Failure(
+        val result = memberRepository.save(member)
+        return if (result.isSuccess) {
+            RegisterMemberResult.Success(result.getOrThrow())
+        } else {
+            RegisterMemberResult.Failure(
                 result.exceptionOrNull()?.message ?: "会員登録に失敗しました"
             )
         }

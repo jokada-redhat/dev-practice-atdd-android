@@ -143,25 +143,16 @@ class BorrowingFlowSteps {
         val bookId = title.hashCode().toString()
         val request = BorrowBookRequest(memberId = memberId, bookId = bookId)
         borrowResult = borrowBookUseCase.execute(request)
-    }
 
-    @Then("エラーメッセージ {string} が返される")
-    fun errorMessageIsReturned(expectedMessage: String) {
+        // エラーメッセージを共通変数に設定
         when (val result = borrowResult) {
             is BorrowBookResult.Failure -> {
-                errorMessage = result.errorMessage
+                CommonSteps.lastErrorMessage = result.errorMessage
             }
-            else -> {
-                when (val returnRes = returnResult) {
-                    is ReturnBookResult.Failure -> {
-                        errorMessage = returnRes.errorMessage
-                    }
-                    else -> fail("エラーが返されるべきでした")
-                }
-            }
+            else -> {}
         }
-        assertEquals("エラーメッセージが一致しません", expectedMessage, errorMessage)
     }
+
 
     @And("書籍 {string} のステータスが {string} のまま変わらない")
     fun bookStatusRemainsUnchanged(title: String, statusString: String) {
@@ -207,5 +198,13 @@ class BorrowingFlowSteps {
         val bookId = title.hashCode().toString()
         val request = ReturnBookRequest(memberId = memberId, bookId = bookId)
         returnResult = returnBookUseCase.execute(request)
+
+        // エラーメッセージを共通変数に設定
+        when (val result = returnResult) {
+            is ReturnBookResult.Failure -> {
+                CommonSteps.lastErrorMessage = result.errorMessage
+            }
+            else -> {}
+        }
     }
 }

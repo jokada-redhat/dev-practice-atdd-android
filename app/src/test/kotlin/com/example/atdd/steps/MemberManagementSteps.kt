@@ -120,21 +120,19 @@ class MemberManagementSteps {
     fun tryToRegisterMemberWithEmail(name: String, email: String) {
         val request = RegisterMemberRequest(name = name, email = email)
         registerResult = registerMemberUseCase.execute(request)
-    }
 
-    @Then("エラーメッセージ {string} が返される")
-    fun errorMessageIsReturned(expectedMessage: String) {
+        // エラーメッセージを共通変数に設定
         when (val result = registerResult) {
             is RegisterMemberResult.Failure -> {
-                errorMessage = result.errorMessage
+                CommonSteps.lastErrorMessage = result.errorMessage
             }
             is RegisterMemberResult.ValidationError -> {
-                errorMessage = result.message
+                CommonSteps.lastErrorMessage = result.message
             }
-            else -> fail("エラーが返されるべきでした")
+            else -> {}
         }
-        assertEquals("エラーメッセージが一致しません", expectedMessage, errorMessage)
     }
+
 
     @And("会員リストに {string} が含まれていない")
     fun memberListDoesNotContain(name: String) {

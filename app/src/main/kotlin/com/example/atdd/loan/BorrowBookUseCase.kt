@@ -46,38 +46,32 @@ class BorrowBookUseCase(
         )
 
         // 貸出記録を保存
-        when (val saveResult = loanRepository.save(loan)) {
-            is Result.Failure -> {
-                return BorrowBookResult.Failure(
-                    saveResult.exceptionOrNull()?.message ?: "貸出記録の保存に失敗しました"
-                )
-            }
-            else -> {}
+        val saveResult = loanRepository.save(loan)
+        if (saveResult.isFailure) {
+            return BorrowBookResult.Failure(
+                saveResult.exceptionOrNull()?.message ?: "貸出記録の保存に失敗しました"
+            )
         }
 
         // 書籍のステータスを更新
-        when (val updateResult = bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)) {
-            is Result.Failure -> {
-                // ロールバック
-                loanRepository.delete(loan.id)
-                return BorrowBookResult.Failure(
-                    updateResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
-                )
-            }
-            else -> {}
+        val updateBookResult = bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)
+        if (updateBookResult.isFailure) {
+            // ロールバック
+            loanRepository.delete(loan.id)
+            return BorrowBookResult.Failure(
+                updateBookResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
+            )
         }
 
         // 会員の貸出冊数を更新
-        when (val updateResult = memberRepository.updateLoanCount(request.memberId, member.loanCount + 1)) {
-            is Result.Failure -> {
-                // ロールバック
-                loanRepository.delete(loan.id)
-                bookRepository.updateStatus(request.bookId, BookStatus.AVAILABLE)
-                return BorrowBookResult.Failure(
-                    updateResult.exceptionOrNull()?.message ?: "会員情報の更新に失敗しました"
-                )
-            }
-            else -> {}
+        val updateMemberResult = memberRepository.updateLoanCount(request.memberId, member.loanCount + 1)
+        if (updateMemberResult.isFailure) {
+            // ロールバック
+            loanRepository.delete(loan.id)
+            bookRepository.updateStatus(request.bookId, BookStatus.AVAILABLE)
+            return BorrowBookResult.Failure(
+                updateMemberResult.exceptionOrNull()?.message ?: "会員情報の更新に失敗しました"
+            )
         }
 
         return BorrowBookResult.Success(loan)
