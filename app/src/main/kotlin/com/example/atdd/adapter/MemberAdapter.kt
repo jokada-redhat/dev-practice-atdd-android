@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.atdd.R
 import com.example.atdd.model.Member
@@ -45,7 +46,13 @@ class MemberAdapter(
     override fun getItemCount() = members.size
 
     fun updateMembers(newMembers: List<Member>) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = members.size
+            override fun getNewListSize() = newMembers.size
+            override fun areItemsTheSame(oldPos: Int, newPos: Int) = members[oldPos].id == newMembers[newPos].id
+            override fun areContentsTheSame(oldPos: Int, newPos: Int) = members[oldPos] == newMembers[newPos]
+        })
         members = newMembers
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }

@@ -25,7 +25,7 @@ class BookCatalogActivity : AppCompatActivity() {
         BorrowBookUseCase(app.loanRepository, app.bookRepository, app.memberRepository)
     }
     private var selectedMemberId: String = ""
-    private var selectedMemberName: String = "Taro Yamada"
+    private var selectedMemberName: String = "山田太郎"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

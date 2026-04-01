@@ -5,16 +5,24 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.atdd.adapter.LoanedArtifact
 import com.example.atdd.adapter.LoanedArtifactAdapter
+import com.example.atdd.loan.ReturnBookRequest
+import com.example.atdd.loan.ReturnBookResult
+import com.example.atdd.loan.ReturnBookUseCase
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class LoanedArtifactsActivity : AppCompatActivity() {
 
     private val app by lazy { application as AtddApplication }
+    private val returnBookUseCase by lazy {
+        ReturnBookUseCase(app.loanRepository, app.bookRepository, app.memberRepository)
+    }
     private lateinit var adapter: LoanedArtifactAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +43,32 @@ class LoanedArtifactsActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         adapter = LoanedArtifactAdapter()
+        adapter.setOnReturnClickListener { artifact -> confirmReturn(artifact) }
         findViewById<RecyclerView>(R.id.recyclerViewLoans).apply {
             layoutManager = LinearLayoutManager(this@LoanedArtifactsActivity)
             adapter = this@LoanedArtifactsActivity.adapter
+        }
+    }
+
+    private fun confirmReturn(artifact: LoanedArtifact) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.return_confirm_title)
+            .setMessage(getString(R.string.return_confirm_message, artifact.book.title, artifact.member.name))
+            .setPositiveButton(R.string.return_button) { _, _ -> executeReturn(artifact) }
+            .setNegativeButton(R.string.borrow_confirm_cancel, null)
+            .show()
+    }
+
+    private fun executeReturn(artifact: LoanedArtifact) {
+        val request = ReturnBookRequest(memberId = artifact.member.id, bookId = artifact.book.id)
+        when (val result = returnBookUseCase.execute(request)) {
+            is ReturnBookResult.Success -> {
+                Toast.makeText(this, R.string.return_success, Toast.LENGTH_SHORT).show()
+                loadArtifacts()
+            }
+            is ReturnBookResult.Failure -> {
+                Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

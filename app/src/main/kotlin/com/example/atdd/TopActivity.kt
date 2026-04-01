@@ -26,10 +26,14 @@ class TopActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
+        toolbar.inflateMenu(R.menu.menu_top)
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.action_debug -> {
+                    startActivity(Intent(this, DebugSettingsActivity::class.java))
+                    true
+                }
                 R.id.action_logout -> {
                     handleLogout()
                     true
@@ -53,8 +57,8 @@ class TopActivity : AppCompatActivity() {
             startActivity(Intent(this, ReturnBookActivity::class.java))
         }
 
-        findViewById<MaterialCardView>(R.id.cardCheckStatus).setOnClickListener {
-            startActivity(Intent(this, LoanedArtifactsActivity::class.java))
+        findViewById<MaterialCardView>(R.id.cardBookList).setOnClickListener {
+            startActivity(Intent(this, BookListActivity::class.java))
         }
     }
 

@@ -1,21 +1,23 @@
 package com.example.atdd
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.atdd.adapter.LoanedArtifact
+import com.example.atdd.adapter.LoanedArtifactAdapter
 import com.example.atdd.loan.ReturnBookRequest
 import com.example.atdd.loan.ReturnBookResult
 import com.example.atdd.loan.ReturnBookUseCase
-import com.example.atdd.model.Book
-import com.example.atdd.model.Member
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 class ReturnBookActivity : AppCompatActivity() {
 
@@ -24,17 +26,17 @@ class ReturnBookActivity : AppCompatActivity() {
         ReturnBookUseCase(app.loanRepository, app.bookRepository, app.memberRepository)
     }
 
-    private var foundBook: Book? = null
-    private var foundMember: Member? = null
+    private lateinit var adapter: LoanedArtifactAdapter
+    private var allArtifacts: List<LoanedArtifact> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_return_book)
 
         setupToolbar()
-        setupIsbnEntry()
-        setupMemberIdEntry()
-        setupReturnButton()
+        setupRecyclerView()
+        setupSearch()
+        loadArtifacts()
     }
 
     private fun setupToolbar() {
@@ -44,120 +46,89 @@ class ReturnBookActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { finish() }
     }
 
-    private fun setupIsbnEntry() {
-        val editIsbn = findViewById<TextInputEditText>(R.id.editIsbn)
-        val isbnLayout = editIsbn.parent.parent as TextInputLayout
-
-        // endIcon（検索アイコン）タップで検索
-        isbnLayout.setEndIconOnClickListener { searchBook() }
-
-        // IME の Search アクションで検索
-        editIsbn.setOnEditorActionListener { _, _, _ ->
-            searchBook()
-            true
+    private fun setupRecyclerView() {
+        adapter = LoanedArtifactAdapter()
+        adapter.setOnReturnClickListener { artifact -> confirmReturn(artifact) }
+        findViewById<RecyclerView>(R.id.recyclerViewLoans).apply {
+            layoutManager = LinearLayoutManager(this@ReturnBookActivity)
+            adapter = this@ReturnBookActivity.adapter
         }
     }
 
-    private fun searchBook() {
-        val editIsbn = findViewById<TextInputEditText>(R.id.editIsbn)
-        val cardFoundBook = findViewById<MaterialCardView>(R.id.cardFoundBook)
-        val isbn = editIsbn.text.toString().trim()
-
-        if (isbn.isEmpty()) return
-
-        val books = app.bookRepository.search(isbn)
-        foundBook = books.firstOrNull()
-        if (foundBook != null) {
-            findViewById<TextView>(R.id.textFoundBookTitle).text = foundBook!!.title
-            findViewById<TextView>(R.id.textFoundBookAuthor).text = foundBook!!.author
-            cardFoundBook.visibility = View.VISIBLE
-        } else {
-            cardFoundBook.visibility = View.GONE
-            Toast.makeText(this, R.string.book_not_found, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun setupMemberIdEntry() {
-        val editMemberId = findViewById<TextInputEditText>(R.id.editMemberId)
-        val memberIdLayout = editMemberId.parent.parent as TextInputLayout
-
-        // endIcon（検索アイコン）タップで検索
-        memberIdLayout.setEndIconOnClickListener { searchMember() }
-
-        // IME の Search アクションで検索
-        editMemberId.setOnEditorActionListener { _, _, _ ->
-            searchMember()
-            true
-        }
-    }
-
-    private fun searchMember() {
-        val editMemberId = findViewById<TextInputEditText>(R.id.editMemberId)
-        val cardFoundMember = findViewById<MaterialCardView>(R.id.cardFoundMember)
-        val memberId = editMemberId.text.toString().trim()
-
-        if (memberId.isEmpty()) return
-
-        foundMember = app.memberRepository.findById(memberId)
-        if (foundMember != null) {
-            val initials = foundMember!!.name.split(" ")
-                .mapNotNull { it.firstOrNull()?.uppercase() }
-                .joinToString("")
-            findViewById<TextView>(R.id.textMemberInitials).text = initials
-            findViewById<TextView>(R.id.textFoundMemberName).text = foundMember!!.name
-            findViewById<TextView>(R.id.textFoundMemberId).text =
-                getString(R.string.member_id_prefix, foundMember!!.id)
-            cardFoundMember.visibility = View.VISIBLE
-        } else {
-            cardFoundMember.visibility = View.GONE
-            Toast.makeText(this, R.string.member_not_found, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun setupReturnButton() {
-        val buttonReturn = findViewById<MaterialButton>(R.id.buttonReturn)
-        val layoutSuccess = findViewById<LinearLayout>(R.id.layoutSuccess)
-        val buttonContinue = findViewById<MaterialButton>(R.id.buttonContinueReturn)
-        val buttonDone = findViewById<MaterialButton>(R.id.buttonReturnDone)
-
-        buttonReturn.setOnClickListener {
-            val book = foundBook
-            val member = foundMember
-
-            if (book == null || member == null) {
-                Toast.makeText(this, R.string.return_both_required, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+    private fun setupSearch() {
+        findViewById<TextInputEditText>(R.id.editSearch).addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                filterArtifacts(s?.toString().orEmpty())
             }
+        })
+    }
 
-            val request = ReturnBookRequest(memberId = member.id, bookId = book.id)
-            when (val result = returnBookUseCase.execute(request)) {
-                is ReturnBookResult.Success -> {
-                    buttonReturn.visibility = View.GONE
-                    layoutSuccess.visibility = View.VISIBLE
-                }
-                is ReturnBookResult.Failure -> {
-                    Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
-                }
+    private fun loadArtifacts() {
+        val loans = app.loanRepository.findAll().filter { !it.isReturned }
+        allArtifacts = loans.mapNotNull { loan ->
+            val book = app.bookRepository.findById(loan.bookId) ?: return@mapNotNull null
+            val member = app.memberRepository.findById(loan.memberId) ?: return@mapNotNull null
+            LoanedArtifact(loan, book, member)
+        }
+
+        val query = findViewById<TextInputEditText>(R.id.editSearch).text?.toString().orEmpty()
+        filterArtifacts(query)
+    }
+
+    private fun filterArtifacts(query: String) {
+        val filtered = if (query.isBlank()) {
+            allArtifacts
+        } else {
+            val q = query.lowercase()
+            allArtifacts.filter {
+                it.book.title.lowercase().contains(q) ||
+                    it.book.isbn.lowercase().contains(q) ||
+                    it.member.name.lowercase().contains(q) ||
+                    it.member.id.lowercase().contains(q)
             }
         }
 
-        buttonContinue.setOnClickListener {
-            resetForm()
-        }
+        adapter.updateArtifacts(filtered)
+        updateUI(filtered)
+    }
 
-        buttonDone.setOnClickListener {
-            finish()
+    private fun updateUI(artifacts: List<LoanedArtifact>) {
+        val textCount = findViewById<TextView>(R.id.textResultCount)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewLoans)
+        val layoutEmpty = findViewById<LinearLayout>(R.id.layoutEmptyState)
+
+        textCount.text = getString(R.string.return_result_count, artifacts.size)
+
+        if (artifacts.isEmpty()) {
+            recyclerView.visibility = View.GONE
+            layoutEmpty.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            layoutEmpty.visibility = View.GONE
         }
     }
 
-    private fun resetForm() {
-        foundBook = null
-        foundMember = null
-        findViewById<TextInputEditText>(R.id.editIsbn).setText("")
-        findViewById<TextInputEditText>(R.id.editMemberId).setText("")
-        findViewById<MaterialCardView>(R.id.cardFoundBook).visibility = View.GONE
-        findViewById<MaterialCardView>(R.id.cardFoundMember).visibility = View.GONE
-        findViewById<MaterialButton>(R.id.buttonReturn).visibility = View.VISIBLE
-        findViewById<LinearLayout>(R.id.layoutSuccess).visibility = View.GONE
+    private fun confirmReturn(artifact: LoanedArtifact) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.return_confirm_title)
+            .setMessage(getString(R.string.return_confirm_message, artifact.book.title, artifact.member.name))
+            .setPositiveButton(R.string.return_button) { _, _ -> executeReturn(artifact) }
+            .setNegativeButton(R.string.borrow_confirm_cancel, null)
+            .show()
+    }
+
+    private fun executeReturn(artifact: LoanedArtifact) {
+        val request = ReturnBookRequest(memberId = artifact.member.id, bookId = artifact.book.id)
+        when (val result = returnBookUseCase.execute(request)) {
+            is ReturnBookResult.Success -> {
+                Toast.makeText(this, R.string.return_success, Toast.LENGTH_SHORT).show()
+                loadArtifacts()
+            }
+            is ReturnBookResult.Failure -> {
+                Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

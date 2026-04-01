@@ -14,83 +14,31 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Book Title -->
+        <!-- Book Title + Borrowed Date -->
         <TextView
             android:id="@+id/textLoanBookTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/on_surface"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:textStyle="bold" />
 
-        <!-- ISBN + Due Date Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textLoanBorrowedDate"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/isbn_label"
-                    android:textSize="10sp"
-                    android:textColor="@color/outline"
-                    android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1" />
-
-                <TextView
-                    android:id="@+id/textLoanIsbn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:layout_marginTop="2dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/due_date_label"
-                    android:textSize="10sp"
-                    android:textColor="@color/outline"
-                    android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1" />
-
-                <TextView
-                    android:id="@+id/textLoanDueDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:layout_marginTop="2dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+            android:textSize="12sp"
+            android:textColor="@color/on_surface_variant"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Borrower Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
 
             <TextView
                 android:id="@+id/textBorrowerInitials"
@@ -104,8 +52,9 @@
                 android:layout_marginEnd="8dp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -126,6 +75,22 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <!-- Return Button (full width) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonReturnBook"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/return_button_short"
+            android:textSize="16sp"
+            android:textColor="@color/primary"
+            app:cornerRadius="24dp"
+            app:icon="@drawable/ic_assignment_return"
+            app:iconGravity="textStart"
+            app:iconSize="20dp"
+            app:iconTint="@color/primary"
+            app:strokeColor="@color/outline_variant" />
 
     </LinearLayout>
 

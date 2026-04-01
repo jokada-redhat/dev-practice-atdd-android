@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -16,7 +17,7 @@
 
     <EditText
         android:id="@+id/editEmail"
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:autofillHints="emailAddress"
@@ -25,7 +26,7 @@
 
     <EditText
         android:id="@+id/editPassword"
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:autofillHints="password"
@@ -34,14 +35,14 @@
 
     <Button
         android:id="@+id/buttonLogin"
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="@string/login_button" />
 
     <TextView
         android:id="@+id/textError"
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/error_content_description"
         android:textColor="@android:color/holo_red_dark"

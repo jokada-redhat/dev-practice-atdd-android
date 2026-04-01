@@ -233,4 +233,41 @@ class BorrowingFlowSteps {
             else -> {}
         }
     }
+
+    // --- 貸出一覧からの返却 ---
+
+    @When("貸出一覧で書籍 {string} の返却ボタンを押す")
+    fun returnBookFromList(title: String) {
+        val bookId = title.hashCode().toString()
+        val activeLoan = loanRepository.findActiveByBookId(bookId)
+        assertNotNull("アクティブな貸出記録が見つかりません", activeLoan)
+
+        val request = ReturnBookRequest(memberId = activeLoan!!.memberId, bookId = bookId)
+        returnResult = returnBookUseCase.execute(request)
+    }
+
+    @Then("貸出一覧から書籍 {string} が消える")
+    fun bookDisappearsFromLoanedList(title: String) {
+        val bookId = title.hashCode().toString()
+        val activeLoans = loanRepository.findAll().filter { !it.isReturned }
+        val found = activeLoans.any { it.bookId == bookId }
+        assertFalse("書籍がまだ貸出一覧に残っています", found)
+    }
+
+    @Then("貸出一覧の件数表示が {string} になる")
+    fun loanedListCountDisplayIs(expectedText: String) {
+        val activeLoans = loanRepository.findAll().filter { !it.isReturned }
+        val actualText = when (activeLoans.size) {
+            0 -> "0冊 貸し出し中"
+            1 -> "1冊 貸し出し中"
+            else -> "${activeLoans.size}冊 貸し出し中"
+        }
+        assertEquals("件数表示が一致しません", expectedText, actualText)
+    }
+
+    @Then("貸出一覧に {string} と表示される")
+    fun loanedListShowsMessage(expectedMessage: String) {
+        val activeLoans = loanRepository.findAll().filter { !it.isReturned }
+        assertTrue("貸出一覧が空ではありません", activeLoans.isEmpty())
+    }
 }

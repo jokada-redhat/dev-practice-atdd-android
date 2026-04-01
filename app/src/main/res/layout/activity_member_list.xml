@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+    android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/surface_container_lowest"
             app:title="@string/member_list_title"
@@ -25,19 +26,19 @@
 
     <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:layout_width="match_parent"
+    android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp">
 
             <!-- Search Bar (TODO: 検索機能実装後に visible に変更) -->
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:visibility="gone"
@@ -52,7 +53,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/searchEditText"
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/member_search_hint"
                     android:textSize="16sp" />
@@ -62,7 +63,7 @@
             <!-- Member List -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewMembers"
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>

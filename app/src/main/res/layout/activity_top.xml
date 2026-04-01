@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+    android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/surface"
-            app:menu="@menu/menu_top"
             app:title="@string/home_title"
             app:titleTextColor="@color/primary" />
 
@@ -25,12 +25,12 @@
 
     <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:layout_width="match_parent"
+    android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp"
@@ -38,7 +38,7 @@
 
             <!-- Display Name -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardBackgroundColor="@color/surface_container_low"
@@ -46,7 +46,7 @@
                 app:cardElevation="0dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp"
@@ -93,7 +93,7 @@
             <!-- Action 1: Borrowing -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardBorrowing"
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
@@ -103,7 +103,7 @@
                 app:cardElevation="2dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="32dp"
@@ -142,7 +142,7 @@
             <!-- Action 2: Returns -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardReturns"
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
@@ -154,7 +154,7 @@
                 app:strokeColor="@color/outline_variant">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="32dp"
@@ -189,10 +189,10 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Action 3: Check Loan Status -->
+            <!-- Action 3: Book List -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardCheckStatus"
-                android:layout_width="match_parent"
+                android:id="@+id/cardBookList"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
@@ -203,7 +203,7 @@
                 app:strokeColor="@color/outline_variant">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="32dp"
@@ -213,14 +213,14 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_marginBottom="16dp"
-                        android:src="@drawable/ic_history"
+                        android:src="@drawable/ic_menu_book"
                         android:tint="@color/secondary"
-                        android:contentDescription="@string/action_check_status" />
+                        android:contentDescription="@string/action_book_list" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/action_check_status"
+                        android:text="@string/action_book_list"
                         android:textSize="24sp"
                         android:textColor="@color/on_surface"
                         android:textStyle="bold"
@@ -230,7 +230,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/action_check_status_subtitle"
+                        android:text="@string/action_book_list_subtitle"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface_variant" />
 

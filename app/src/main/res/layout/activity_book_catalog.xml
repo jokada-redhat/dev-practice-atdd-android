@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+    android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/surface_container_lowest"
             app:title="@string/book_catalog_title"
@@ -25,19 +26,19 @@
 
     <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:layout_width="match_parent"
+    android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Active Selection Banner -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardActiveSelection"
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 app:cardBackgroundColor="@color/primary_fixed"
@@ -45,7 +46,7 @@
                 app:cardElevation="0dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="12dp"
@@ -105,14 +106,14 @@
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
-                android:layout_width="match_parent"
+    android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="24dp">
 
                 <!-- Search Bar (TODO: 検索機能実装後に visible に変更) -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
@@ -127,7 +128,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchEditText"
-                        android:layout_width="match_parent"
+    android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/book_search_hint"
                         android:textSize="16sp" />
@@ -137,7 +138,7 @@
                 <!-- Filter Buttons -->
                 <RadioGroup
                     android:id="@+id/radioGroupFilter"
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:orientation="horizontal">
@@ -173,7 +174,7 @@
                 <!-- Book List -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewBooks"
-                    android:layout_width="match_parent"
+    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp" />
 

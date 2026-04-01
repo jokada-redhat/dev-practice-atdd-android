@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.atdd.R
 import com.example.atdd.model.Book
@@ -62,8 +63,14 @@ class BookAdapter(
     override fun getItemCount() = books.size
 
     fun updateBooks(newBooks: List<Book>) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = books.size
+            override fun getNewListSize() = newBooks.size
+            override fun areItemsTheSame(oldPos: Int, newPos: Int) = books[oldPos].id == newBooks[newPos].id
+            override fun areContentsTheSame(oldPos: Int, newPos: Int) = books[oldPos] == newBooks[newPos]
+        })
         books = newBooks
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun filter(filterType: FilterType) {
