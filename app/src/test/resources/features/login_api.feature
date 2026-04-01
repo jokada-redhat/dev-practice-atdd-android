@@ -1,6 +1,7 @@
 Feature: ログインAPI
     バックエンドのログインAPIの振る舞いを検証する
 
+    @smoke
     Scenario: 正しい認証情報でトークンが返る
         Given ログインAPIサーバーが起動している
         When POST "/api/auth/login" に以下のJSONを送信する:

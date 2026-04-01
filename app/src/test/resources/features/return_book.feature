@@ -8,6 +8,7 @@ Feature: 貸出一覧からの書籍返却
     And 会員 "DA-8821" が書籍 "Foundation" (ISBN: "978-0553293357") を借りている
     And 会員 "DA-1156" が書籍 "Neuromancer" (ISBN: "978-0441569595") を借りている
 
+  @smoke
   Scenario: 全ての貸出中書籍が一覧表示される
     When 返却画面を開く
     Then 貸出一覧に 3 件表示される

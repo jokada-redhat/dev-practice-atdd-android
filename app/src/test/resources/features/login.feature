@@ -1,6 +1,7 @@
 Feature: ログイン機能
     ユーザーがメールアドレスとパスワードでログインできる
 
+    @smoke
     Scenario: 正しい認証情報でログインできる
         Given ログインAPIが利用可能である
         And ユーザー "test@example.com" がパスワード "password123" で登録されている

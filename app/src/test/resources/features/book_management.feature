@@ -39,6 +39,7 @@ Feature: 書籍管理
     And 書籍一覧で "Asimov" と検索する
     Then 書籍一覧に 1 件表示される
 
+  @smoke
   Scenario: 新しい書籍を登録できる
     When 書籍を登録する:
       | title      | author       | isbn           | year |

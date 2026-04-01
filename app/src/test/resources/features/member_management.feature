@@ -1,6 +1,7 @@
 Feature: 会員管理
   図書館の会員を登録・一覧表示・検索できる
 
+  @smoke
   Scenario: 新規会員を登録する
     Given 会員リストが空である
     When 会員 "山田太郎" をメールアドレス "taro@example.com" で登録する

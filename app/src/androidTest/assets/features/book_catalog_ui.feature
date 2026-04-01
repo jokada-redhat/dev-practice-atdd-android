@@ -2,6 +2,7 @@
 Feature: 書籍カタログ画面の表示とフィルタ
     書籍カタログ画面で書籍一覧の表示とフィルタリングができる
 
+    @smoke
     Scenario: 書籍カタログ画面に書籍カードが表示される
         Given 書籍カタログ画面が会員 "Taro Yamada" で表示されている
         Then 書籍 "The Infinite Library" のカードが表示されている

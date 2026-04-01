@@ -1,6 +1,7 @@
 Feature: 書籍カタログ
   図書館の書籍を一覧表示・検索・フィルタリングできる
 
+  @smoke
   Scenario: 全書籍を表示する
     Given 以下の書籍が登録されている:
       | title                        | author              | isbn           | publicationYear | status    |
