@@ -14,7 +14,7 @@ class LibrettaApplication : Application() {
     var baseUrl: String = "https://production.example.com"
     val okHttpClient: OkHttpClient = OkHttpClient()
 
-    var skipAuth: Boolean = BuildConfig.SKIP_AUTH
+    var skipAuthApi: Boolean = BuildConfig.SKIP_AUTH_API
 
     val memberRepository: MemberRepository = InMemoryMemberRepository()
     val bookRepository: BookRepository = InMemoryBookRepository()

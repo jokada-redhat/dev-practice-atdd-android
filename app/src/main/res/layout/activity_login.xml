@@ -130,6 +130,17 @@
             android:textSize="14sp"
             android:visibility="gone" />
 
+        <!-- Debug Mode Indicator -->
+        <TextView
+            android:id="@+id/textDebugMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/login_debug_mode"
+            android:textColor="@color/outline"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
     </LinearLayout>
 
 </ScrollView>

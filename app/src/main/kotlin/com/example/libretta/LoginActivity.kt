@@ -9,8 +9,10 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.libretta.auth.AuthApiClient
+import com.example.libretta.auth.AuthRepository
 import com.example.libretta.auth.AuthSkipper
 import com.example.libretta.auth.LoginUiState
+import com.example.libretta.auth.StubAuthRepository
 import com.example.libretta.auth.LoginUseCase
 import com.example.libretta.auth.LoginViewModel
 import com.example.libretta.auth.LoginViewModelFactory
@@ -25,15 +27,19 @@ class LoginActivity : AppCompatActivity() {
 
     private val viewModel: LoginViewModel by viewModels {
         val app = application as LibrettaApplication
-        val client = AuthApiClient(app.okHttpClient, app.baseUrl)
-        LoginViewModelFactory(LoginUseCase(client), sessionManager)
+        val repository: AuthRepository = if (BuildConfig.DEBUG) {
+            StubAuthRepository()
+        } else {
+            AuthApiClient(app.okHttpClient, app.baseUrl)
+        }
+        LoginViewModelFactory(LoginUseCase(repository), sessionManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val app = application as LibrettaApplication
-        if (AuthSkipper.applyIfNeeded(app.skipAuth, sessionManager)
+        if (AuthSkipper.applyIfNeeded(app.skipAuthApi, sessionManager)
             || sessionManager.isLoggedIn()) {
             startActivity(Intent(this, TopActivity::class.java))
             finish()
@@ -46,6 +52,12 @@ class LoginActivity : AppCompatActivity() {
         val editPassword = findViewById<EditText>(R.id.editPassword)
         val buttonLogin = findViewById<Button>(R.id.buttonLogin)
         val textError = findViewById<TextView>(R.id.textError)
+
+        if (BuildConfig.DEBUG) {
+            editEmail.setText(StubAuthRepository.EMAIL)
+            editPassword.setText(StubAuthRepository.PASSWORD)
+            findViewById<TextView>(R.id.textDebugMode).visibility = View.VISIBLE
+        }
 
         buttonLogin.setOnClickListener {
             viewModel.login(editEmail.text.toString(), editPassword.text.toString())

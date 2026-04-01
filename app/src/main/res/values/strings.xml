@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Libretta</string>
     <string name="login_subtitle">図書管理システムにログイン</string>
+    <string name="login_debug_mode">デバッグモードで動作中（スタブ認証）</string>
     <string name="email_hint">メールアドレス</string>
     <string name="password_hint">パスワード</string>
     <string name="login_button">ログイン</string>
