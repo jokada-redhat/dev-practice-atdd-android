@@ -8,11 +8,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.libretta.R
+import com.example.libretta.loan.LoanRepository
 import com.example.libretta.model.Book
 import com.google.android.material.button.MaterialButton
 
-class BookAdapter(private var books: List<Book> = emptyList(), private val onBorrowClick: (Book) -> Unit = {}) :
-    RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class BookAdapter(
+    private var books: List<Book> = emptyList(),
+    private val loanRepository: LoanRepository,
+    private val onBorrowClick: (Book) -> Unit = {}
+) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textBookTitle: TextView = view.findViewById(R.id.textBookTitle)
@@ -39,7 +43,8 @@ class BookAdapter(private var books: List<Book> = emptyList(), private val onBor
         holder.textBookYear.text = book.publicationYear
 
         // ステータスバッジの設定
-        if (book.isAvailable) {
+        val isAvailable = loanRepository.findActiveByBookId(book.id) == null
+        if (isAvailable) {
             holder.textBookStatus.text = context.getString(R.string.book_status_available)
             holder.textBookStatus.setTextColor(
                 ContextCompat.getColor(context, R.color.primary)

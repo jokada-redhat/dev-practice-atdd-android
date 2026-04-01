@@ -1,7 +1,6 @@
 package com.example.libretta.book
 
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 
 class InMemoryBookRepository : BookRepository {
     private val books = mutableMapOf<String, Book>()
@@ -21,16 +20,6 @@ class InMemoryBookRepository : BookRepository {
         it.title.contains(query, ignoreCase = true) ||
             it.author.contains(query, ignoreCase = true) ||
             it.isbn.contains(query, ignoreCase = true)
-    }
-
-    override fun filterByStatus(status: BookStatus): List<Book> = books.values.filter { it.status == status }
-
-    override fun updateStatus(bookId: String, status: BookStatus): Result<Unit> {
-        val book = books[bookId]
-            ?: return Result.failure(NoSuchElementException("書籍が見つかりません"))
-
-        books[bookId] = book.copy(status = status)
-        return Result.success(Unit)
     }
 
     override fun delete(id: String): Result<Unit> {

@@ -40,7 +40,7 @@ Feature: 貸出一覧からの書籍返却
     When 返却画面を開く
     And 検索ボックスに "Infinite" と入力する
     And 絞り込み結果から書籍 "The Infinite Library" を返却する
-    Then 返却後の書籍 "The Infinite Library" のステータスが "AVAILABLE" である
+    Then 返却後の書籍 "The Infinite Library" は貸出可能である
     And 返却後の会員 "DA-8821" の貸出冊数が 1 である
 
   Scenario: 検索をクリアすると全件表示に戻る

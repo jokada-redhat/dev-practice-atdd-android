@@ -1,7 +1,6 @@
 package com.example.libretta.book
 
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 
 data class RegisterBookRequest(val title: String, val author: String, val isbn: String, val publicationYear: String)
 
@@ -34,8 +33,7 @@ class RegisterBookUseCase(private val bookRepository: BookRepository) {
             title = request.title,
             author = request.author,
             isbn = request.isbn,
-            publicationYear = request.publicationYear,
-            status = BookStatus.AVAILABLE
+            publicationYear = request.publicationYear
         )
 
         return when (val result = bookRepository.save(book)) {

@@ -8,7 +8,7 @@ Feature: 貸出一覧からの返却
   Scenario: 貸出一覧から書籍を返却する
     Given 会員 "DA-8821" が書籍 "The Infinite Library" を既に借りている
     When 貸出一覧で書籍 "The Infinite Library" の返却ボタンを押す
-    Then 書籍 "The Infinite Library" のステータスが "AVAILABLE" になる
+    Then 書籍 "The Infinite Library" は貸出可能である
     And 会員 "DA-8821" の貸出冊数が 0 になる
     And 貸出記録の返却日が記録される
     And 貸出一覧から書籍 "The Infinite Library" が消える

@@ -12,7 +12,6 @@ import com.example.libretta.loan.BorrowBookRequest
 import com.example.libretta.loan.BorrowBookResult
 import com.example.libretta.loan.BorrowBookUseCase
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -64,8 +63,8 @@ class BookCatalogActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewBooks)
         val allBooks = app.bookRepository.findAll()
 
-        bookAdapter = BookAdapter(allBooks) { book ->
-            if (book.isAvailable) {
+        bookAdapter = BookAdapter(allBooks, app.loanRepository) { book ->
+            if (app.loanRepository.findActiveByBookId(book.id) == null) {
                 showBorrowConfirmDialog(book)
             }
         }
@@ -91,12 +90,14 @@ class BookCatalogActivity : AppCompatActivity() {
 
         buttonAvailable.setOnClickListener {
             setActiveButton(buttonAvailable, buttonAll, buttonBorrowed)
-            bookAdapter.updateBooks(app.bookRepository.filterByStatus(BookStatus.AVAILABLE))
+            val borrowedIds = app.loanRepository.findBorrowedBookIds()
+            bookAdapter.updateBooks(app.bookRepository.findAll().filter { it.id !in borrowedIds })
         }
 
         buttonBorrowed.setOnClickListener {
             setActiveButton(buttonBorrowed, buttonAll, buttonAvailable)
-            bookAdapter.updateBooks(app.bookRepository.filterByStatus(BookStatus.BORROWED))
+            val borrowedIds = app.loanRepository.findBorrowedBookIds()
+            bookAdapter.updateBooks(app.bookRepository.findAll().filter { it.id in borrowedIds })
         }
     }
 

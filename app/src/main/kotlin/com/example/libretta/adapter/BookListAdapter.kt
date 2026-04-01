@@ -8,10 +8,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.libretta.R
+import com.example.libretta.loan.LoanRepository
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 
-class BookListAdapter(private var books: List<Book> = emptyList()) :
+class BookListAdapter(private var books: List<Book> = emptyList(), private val loanRepository: LoanRepository? = null) :
     RecyclerView.Adapter<BookListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -40,7 +40,8 @@ class BookListAdapter(private var books: List<Book> = emptyList()) :
 
         holder.buttonBorrow.visibility = View.GONE
 
-        if (book.status == BookStatus.AVAILABLE) {
+        val isAvailable = loanRepository?.findActiveByBookId(book.id) == null
+        if (isAvailable) {
             holder.textStatus.text = context.getString(R.string.book_status_available)
             holder.textStatus.setTextColor(ContextCompat.getColor(context, R.color.primary))
         } else {
