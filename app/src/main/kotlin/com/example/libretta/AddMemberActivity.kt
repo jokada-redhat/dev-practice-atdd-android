@@ -56,9 +56,8 @@ class AddMemberActivity : AppCompatActivity() {
 
         buttonAddMember.setOnClickListener {
             val memberName = editMemberName.text.toString().trim()
-            val email = "" // 将来のフォーム拡張用
 
-            val request = RegisterMemberRequest(name = memberName, email = email)
+            val request = RegisterMemberRequest(name = memberName)
             when (val result = registerMemberUseCase.execute(request)) {
                 is RegisterMemberResult.Success -> {
                     Toast.makeText(

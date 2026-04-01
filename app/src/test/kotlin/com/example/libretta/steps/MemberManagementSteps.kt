@@ -14,7 +14,6 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 
@@ -45,9 +44,9 @@ class MemberManagementSteps {
         memberRepository.clear()
     }
 
-    @When("会員 {string} をメールアドレス {string} で登録する")
-    fun registerMemberWithEmail(name: String, email: String) {
-        val request = RegisterMemberRequest(name = name, email = email)
+    @When("会員 {string} を登録する")
+    fun registerMember(name: String) {
+        val request = RegisterMemberRequest(name = name)
         registerResult = registerMemberUseCase.execute(request)
     }
 
@@ -75,8 +74,7 @@ class MemberManagementSteps {
         for (row in members) {
             val member = Member(
                 id = row["id"]!!,
-                name = row["name"]!!,
-                email = row["email"]!!
+                name = row["name"]!!
             )
             memberRepository.save(member)
         }
@@ -116,43 +114,9 @@ class MemberManagementSteps {
         )
     }
 
-    @Given("会員 {string} がメールアドレス {string} で既に登録されている")
-    fun memberAlreadyRegistered(name: String, email: String) {
-        val request = RegisterMemberRequest(name = name, email = email)
-        registerMemberUseCase.execute(request)
-    }
-
-    @When("会員 {string} をメールアドレス {string} で登録しようとする")
-    fun tryToRegisterMemberWithEmail(name: String, email: String) {
-        val request = RegisterMemberRequest(name = name, email = email)
-        registerResult = registerMemberUseCase.execute(request)
-
-        // エラーメッセージを共通変数に設定
-        when (val result = registerResult) {
-            is RegisterMemberResult.Failure -> {
-                CommonSteps.lastErrorMessage = result.errorMessage
-            }
-
-            is RegisterMemberResult.ValidationError -> {
-                CommonSteps.lastErrorMessage = result.message
-            }
-
-            else -> {}
-        }
-    }
-
-    @And("会員リストに {string} が含まれていない")
-    fun memberListDoesNotContain(name: String) {
-        memberList = listMembersUseCase.execute()
-        assertFalse(
-            "会員リストに $name が含まれていないべき",
-            memberList.any { it.name == name }
-        )
-    }
-
     @When("名前が空で登録しようとする")
     fun tryToRegisterWithEmptyName() {
-        val request = RegisterMemberRequest(name = "", email = "test@example.com")
+        val request = RegisterMemberRequest(name = "")
         registerResult = registerMemberUseCase.execute(request)
         when (val result = registerResult) {
             is RegisterMemberResult.ValidationError -> {

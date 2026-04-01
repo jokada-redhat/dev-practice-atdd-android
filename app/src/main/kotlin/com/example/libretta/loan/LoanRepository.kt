@@ -1,7 +1,6 @@
 package com.example.libretta.loan
 
 import com.example.libretta.model.Loan
-import java.time.LocalDate
 
 interface LoanRepository {
     fun save(loan: Loan): Result<Loan>
@@ -10,7 +9,6 @@ interface LoanRepository {
     fun findByBookId(bookId: String): Loan?
     fun findActiveByBookId(bookId: String): Loan?
     fun findAll(): List<Loan>
-    fun returnBook(loanId: String, returnedDate: LocalDate): Result<Loan>
     fun delete(id: String): Result<Unit>
     fun countActiveByMemberId(memberId: String): Int
     fun findBorrowedBookIds(): Set<String>

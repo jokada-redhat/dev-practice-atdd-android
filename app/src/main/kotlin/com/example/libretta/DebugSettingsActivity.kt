@@ -63,7 +63,7 @@ class DebugSettingsActivity : AppCompatActivity() {
     private fun updateCounts() {
         val bookCount = app.bookRepository.findAll().size
         val memberCount = app.memberRepository.findAll().size
-        val loanCount = app.loanRepository.findAll().filter { !it.isReturned }.size
+        val loanCount = app.loanRepository.findAll().size
 
         findViewById<TextView>(R.id.textBookCount).text =
             getString(R.string.debug_book_count, bookCount)

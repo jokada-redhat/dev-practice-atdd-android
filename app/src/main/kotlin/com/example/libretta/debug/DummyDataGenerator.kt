@@ -44,26 +44,26 @@ class DummyDataGenerator(
 
     companion object {
         val members = listOf(
-            Member("DA-0001", "山田太郎", "yamada.taro@example.com"),
-            Member("DA-0002", "佐藤花子", "sato.hanako@example.com"),
-            Member("DA-0003", "鈴木一郎", "suzuki.ichiro@example.com"),
-            Member("DA-0004", "田中美咲", "tanaka.misaki@example.com"),
-            Member("DA-0005", "高橋健太", "takahashi.kenta@example.com"),
-            Member("DA-0006", "伊藤由美", "ito.yumi@example.com"),
-            Member("DA-0007", "渡辺翔太", "watanabe.shota@example.com"),
-            Member("DA-0008", "中村あかり", "nakamura.akari@example.com"),
-            Member("DA-0009", "小林大輔", "kobayashi.daisuke@example.com"),
-            Member("DA-0010", "加藤さくら", "kato.sakura@example.com"),
-            Member("DA-0011", "吉田拓海", "yoshida.takumi@example.com"),
-            Member("DA-0012", "山口真理", "yamaguchi.mari@example.com"),
-            Member("DA-0013", "松本悠人", "matsumoto.yuto@example.com"),
-            Member("DA-0014", "井上凛", "inoue.rin@example.com"),
-            Member("DA-0015", "木村蓮", "kimura.ren@example.com"),
-            Member("DA-0016", "林美優", "hayashi.miyu@example.com"),
-            Member("DA-0017", "清水陽太", "shimizu.yota@example.com"),
-            Member("DA-0018", "森本結衣", "morimoto.yui@example.com"),
-            Member("DA-0019", "池田颯太", "ikeda.sota@example.com"),
-            Member("DA-0020", "橋本琴音", "hashimoto.kotone@example.com")
+            Member("DA-0001", "山田太郎"),
+            Member("DA-0002", "佐藤花子"),
+            Member("DA-0003", "鈴木一郎"),
+            Member("DA-0004", "田中美咲"),
+            Member("DA-0005", "高橋健太"),
+            Member("DA-0006", "伊藤由美"),
+            Member("DA-0007", "渡辺翔太"),
+            Member("DA-0008", "中村あかり"),
+            Member("DA-0009", "小林大輔"),
+            Member("DA-0010", "加藤さくら"),
+            Member("DA-0011", "吉田拓海"),
+            Member("DA-0012", "山口真理"),
+            Member("DA-0013", "松本悠人"),
+            Member("DA-0014", "井上凛"),
+            Member("DA-0015", "木村蓮"),
+            Member("DA-0016", "林美優"),
+            Member("DA-0017", "清水陽太"),
+            Member("DA-0018", "森本結衣"),
+            Member("DA-0019", "池田颯太"),
+            Member("DA-0020", "橋本琴音")
         )
 
         val books = listOf(

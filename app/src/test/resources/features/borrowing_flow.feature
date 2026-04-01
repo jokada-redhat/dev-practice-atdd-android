@@ -36,7 +36,7 @@ Feature: 貸し出しフロー
     When 会員 "DA-8821" が書籍 "The Infinite Library" を返却する
     Then 書籍 "The Infinite Library" は貸出可能である
     And 会員 "DA-8821" の貸出冊数が 0 になる
-    And 貸出記録の返却日が記録される
+    And 貸出記録が削除される
 
   Scenario: 借りていない書籍は返却できない
     Given 会員 "山田太郎" (ID: "DA-8821") が登録されている
