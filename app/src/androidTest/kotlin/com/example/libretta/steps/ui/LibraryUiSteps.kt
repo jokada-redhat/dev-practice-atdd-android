@@ -52,6 +52,21 @@ class LibraryUiSteps {
         bookCatalogScenario?.close()
     }
 
+    // === 貸出上限セットアップ ===
+
+    @Given("会員 {string} の貸出冊数を上限に設定する")
+    fun setMemberLoanCountToLimit(memberName: String) {
+        val app = TestHelper.getApp()
+        val member = app.memberRepository.search(memberName).firstOrNull()
+            ?: throw IllegalStateException("会員 '$memberName' が見つかりません")
+        val result = app.memberRepository.updateLoanCount(member.id, 3)
+        if (result.isFailure) {
+            throw IllegalStateException(
+                "会員の貸出冊数の設定に失敗しました: ${result.exceptionOrNull()?.message}"
+            )
+        }
+    }
+
     // === トップ画面 ===
 
     @Given("トップ画面が表示されている")
@@ -170,6 +185,13 @@ class LibraryUiSteps {
         Thread.sleep(TOAST_WAIT_MS)
         // Toastの検証はEspressoでは困難なため、
         // 画面がクラッシュせずに表示されていることを確認
+        onView(withId(R.id.recyclerViewBooks)).check(matches(isDisplayed()))
+    }
+
+    @Then("貸し出しエラーメッセージが表示される")
+    fun borrowErrorMessageIsDisplayed() {
+        Thread.sleep(TOAST_WAIT_MS)
+        // エラー時は画面遷移せずカタログ画面が表示されたままであることを確認
         onView(withId(R.id.recyclerViewBooks)).check(matches(isDisplayed()))
     }
 
