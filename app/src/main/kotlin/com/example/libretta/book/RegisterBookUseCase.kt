@@ -3,12 +3,7 @@ package com.example.libretta.book
 import com.example.libretta.model.Book
 import com.example.libretta.model.BookStatus
 
-data class RegisterBookRequest(
-    val title: String,
-    val author: String,
-    val isbn: String,
-    val publicationYear: String
-)
+data class RegisterBookRequest(val title: String, val author: String, val isbn: String, val publicationYear: String)
 
 sealed class RegisterBookResult {
     data class Success(val book: Book) : RegisterBookResult()
@@ -45,8 +40,11 @@ class RegisterBookUseCase(private val bookRepository: BookRepository) {
 
         return when (val result = bookRepository.save(book)) {
             else -> {
-                if (result.isSuccess) RegisterBookResult.Success(result.getOrThrow())
-                else RegisterBookResult.Failure(result.exceptionOrNull()?.message ?: "登録に失敗しました")
+                if (result.isSuccess) {
+                    RegisterBookResult.Success(result.getOrThrow())
+                } else {
+                    RegisterBookResult.Failure(result.exceptionOrNull()?.message ?: "登録に失敗しました")
+                }
             }
         }
     }

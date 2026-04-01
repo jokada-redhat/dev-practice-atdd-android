@@ -17,7 +17,12 @@ import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 
 class BorrowingFlowSteps {
 
@@ -56,7 +61,7 @@ class BorrowingFlowSteps {
         val member = Member(
             id = id,
             name = name,
-            email = "${id}@example.com",
+            email = "$id@example.com",
             loanCount = 0
         )
         memberRepository.save(member)
@@ -121,6 +126,7 @@ class BorrowingFlowSteps {
                 assertNotNull("貸出記録が見つかりません", loan)
                 assertNull("返却日が設定されていないべき", loan?.returnedDate)
             }
+
             else -> fail("貸出が成功していません")
         }
     }
@@ -149,10 +155,10 @@ class BorrowingFlowSteps {
             is BorrowBookResult.Failure -> {
                 CommonSteps.lastErrorMessage = result.errorMessage
             }
+
             else -> {}
         }
     }
-
 
     @And("書籍 {string} のステータスが {string} のまま変わらない")
     fun bookStatusRemainsUnchanged(title: String, statusString: String) {
@@ -172,6 +178,7 @@ class BorrowingFlowSteps {
             is BorrowBookResult.Success -> {
                 // OK
             }
+
             else -> fail("貸出が成功していません")
         }
     }
@@ -189,6 +196,7 @@ class BorrowingFlowSteps {
             is ReturnBookResult.Success -> {
                 assertNotNull("返却日が記録されていません", result.loan.returnedDate)
             }
+
             else -> fail("返却が成功していません")
         }
     }
@@ -203,6 +211,7 @@ class BorrowingFlowSteps {
             is ReturnBookResult.Failure -> {
                 CommonSteps.lastErrorMessage = result.errorMessage
             }
+
             else -> {}
         }
     }
@@ -217,6 +226,7 @@ class BorrowingFlowSteps {
             is BorrowBookResult.Failure -> {
                 CommonSteps.lastErrorMessage = result.errorMessage
             }
+
             else -> {}
         }
     }
@@ -230,6 +240,7 @@ class BorrowingFlowSteps {
             is BorrowBookResult.Failure -> {
                 CommonSteps.lastErrorMessage = result.errorMessage
             }
+
             else -> {}
         }
     }

@@ -18,7 +18,9 @@ import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 
 class ReturnBookSteps {
 
@@ -53,7 +55,7 @@ class ReturnBookSteps {
     @Given("返却用に会員 {string} \\(ID: {string}) が登録されている")
     fun memberIsRegisteredForReturn(name: String, id: String) {
         memberRepository.save(
-            Member(id = id, name = name, email = "${id}@example.com", loanCount = 0)
+            Member(id = id, name = name, email = "$id@example.com", loanCount = 0)
         )
     }
 

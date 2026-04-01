@@ -7,13 +7,9 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 
 class ClickChildViewAction(private val childViewId: Int) : ViewAction {
-    override fun getConstraints(): Matcher<View> {
-        return allOf()
-    }
+    override fun getConstraints(): Matcher<View> = allOf()
 
-    override fun getDescription(): String {
-        return "Click on a child view with id $childViewId"
-    }
+    override fun getDescription(): String = "Click on a child view with id $childViewId"
 
     override fun perform(uiController: UiController, view: View) {
         val childView = view.findViewById<View>(childViewId)

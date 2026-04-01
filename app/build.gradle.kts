@@ -81,7 +81,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/Manifest*.*",
             // UI層 (Instrumented テストでカバー)
             "**/*Activity.*",
-            "**/debug/**",
+            "**/debug/**"
         )
     }
     val execData = fileTree(layout.buildDirectory) {

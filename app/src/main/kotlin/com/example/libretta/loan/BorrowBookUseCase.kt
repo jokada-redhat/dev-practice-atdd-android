@@ -8,10 +8,7 @@ import com.example.libretta.model.Loan
 import java.time.LocalDate
 import java.util.UUID
 
-data class BorrowBookRequest(
-    val memberId: String,
-    val bookId: String
-)
+data class BorrowBookRequest(val memberId: String, val bookId: String)
 
 sealed class BorrowBookResult {
     data class Success(val loan: Loan) : BorrowBookResult()

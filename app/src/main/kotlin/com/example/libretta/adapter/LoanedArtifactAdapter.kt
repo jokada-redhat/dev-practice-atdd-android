@@ -13,11 +13,7 @@ import com.example.libretta.model.Member
 import com.google.android.material.button.MaterialButton
 import java.time.format.DateTimeFormatter
 
-data class LoanedArtifact(
-    val loan: Loan,
-    val book: Book,
-    val member: Member
-)
+data class LoanedArtifact(val loan: Loan, val book: Book, val member: Member)
 
 class LoanedArtifactAdapter(
     private var artifacts: List<LoanedArtifact> = emptyList(),
@@ -71,7 +67,8 @@ class LoanedArtifactAdapter(
         val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = artifacts.size
             override fun getNewListSize() = newArtifacts.size
-            override fun areItemsTheSame(oldPos: Int, newPos: Int) = artifacts[oldPos].loan.id == newArtifacts[newPos].loan.id
+            override fun areItemsTheSame(oldPos: Int, newPos: Int) =
+                artifacts[oldPos].loan.id == newArtifacts[newPos].loan.id
             override fun areContentsTheSame(oldPos: Int, newPos: Int) = artifacts[oldPos] == newArtifacts[newPos]
         })
         artifacts = newArtifacts

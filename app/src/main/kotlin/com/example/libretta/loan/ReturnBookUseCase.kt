@@ -7,10 +7,7 @@ import com.example.libretta.model.BookStatus
 import com.example.libretta.model.Loan
 import java.time.LocalDate
 
-data class ReturnBookRequest(
-    val memberId: String,
-    val bookId: String
-)
+data class ReturnBookRequest(val memberId: String, val bookId: String)
 
 sealed class ReturnBookResult {
     data class Success(val loan: Loan) : ReturnBookResult()

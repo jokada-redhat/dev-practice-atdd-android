@@ -69,7 +69,7 @@ class DummyDataGenerator(
             Member("DA-0017", "清水陽太", "shimizu.yota@example.com"),
             Member("DA-0018", "森本結衣", "morimoto.yui@example.com"),
             Member("DA-0019", "池田颯太", "ikeda.sota@example.com"),
-            Member("DA-0020", "橋本琴音", "hashimoto.kotone@example.com"),
+            Member("DA-0020", "橋本琴音", "hashimoto.kotone@example.com")
         )
 
         val books = listOf(
@@ -131,22 +131,22 @@ class DummyDataGenerator(
             Book("B-047", "影響力の武器", "ロバート・B・チャルディーニ", "978-4-416-70601-5", "1984", BookStatus.AVAILABLE),
             Book("B-048", "ゼロ・トゥ・ワン", "ピーター・ティール", "978-4-14-081695-0", "2014", BookStatus.AVAILABLE),
             Book("B-049", "イシューからはじめよ", "安宅和人", "978-4-862-76088-5", "2010", BookStatus.AVAILABLE),
-            Book("B-050", "FACTFULNESS", "ハンス・ロスリング", "978-4-532-32211-6", "2019", BookStatus.AVAILABLE),
+            Book("B-050", "FACTFULNESS", "ハンス・ロスリング", "978-4-532-32211-6", "2019", BookStatus.AVAILABLE)
         )
 
         // 貸出データ: 10冊を6人の会員に貸出中
         // Triple(Loan, bookId, memberId)
         fun loans(today: LocalDate) = listOf(
-            Triple(Loan("L-001", "DA-0001", "B-003", today.minusDays(5)), "B-003", "DA-0001"),   // 人間失格 → 山田太郎
-            Triple(Loan("L-002", "DA-0001", "B-009", today.minusDays(3)), "B-009", "DA-0001"),   // ノルウェイの森 → 山田太郎
-            Triple(Loan("L-003", "DA-0002", "B-017", today.minusDays(10)), "B-017", "DA-0002"),  // ニューロマンサー → 佐藤花子
-            Triple(Loan("L-004", "DA-0002", "B-021", today.minusDays(7)), "B-021", "DA-0002"),   // 容疑者Xの献身 → 佐藤花子
-            Triple(Loan("L-005", "DA-0003", "B-031", today.minusDays(12)), "B-031", "DA-0003"),  // 星の王子さま → 鈴木一郎
-            Triple(Loan("L-006", "DA-0004", "B-036", today.minusDays(2)), "B-036", "DA-0004"),   // 1984年 → 田中美咲
-            Triple(Loan("L-007", "DA-0004", "B-041", today.minusDays(1)), "B-041", "DA-0004"),   // サピエンス全史 → 田中美咲
-            Triple(Loan("L-008", "DA-0005", "B-045", today.minusDays(8)), "B-045", "DA-0005"),   // 嫌われる勇気 → 高橋健太
-            Triple(Loan("L-009", "DA-0006", "B-012", today.minusDays(4)), "B-012", "DA-0006"),   // 時をかける少女 → 伊藤由美
-            Triple(Loan("L-010", "DA-0006", "B-025", today.minusDays(6)), "B-025", "DA-0006"),   // 十角館の殺人 → 伊藤由美
+            Triple(Loan("L-001", "DA-0001", "B-003", today.minusDays(5)), "B-003", "DA-0001"), // 人間失格 → 山田太郎
+            Triple(Loan("L-002", "DA-0001", "B-009", today.minusDays(3)), "B-009", "DA-0001"), // ノルウェイの森 → 山田太郎
+            Triple(Loan("L-003", "DA-0002", "B-017", today.minusDays(10)), "B-017", "DA-0002"), // ニューロマンサー → 佐藤花子
+            Triple(Loan("L-004", "DA-0002", "B-021", today.minusDays(7)), "B-021", "DA-0002"), // 容疑者Xの献身 → 佐藤花子
+            Triple(Loan("L-005", "DA-0003", "B-031", today.minusDays(12)), "B-031", "DA-0003"), // 星の王子さま → 鈴木一郎
+            Triple(Loan("L-006", "DA-0004", "B-036", today.minusDays(2)), "B-036", "DA-0004"), // 1984年 → 田中美咲
+            Triple(Loan("L-007", "DA-0004", "B-041", today.minusDays(1)), "B-041", "DA-0004"), // サピエンス全史 → 田中美咲
+            Triple(Loan("L-008", "DA-0005", "B-045", today.minusDays(8)), "B-045", "DA-0005"), // 嫌われる勇気 → 高橋健太
+            Triple(Loan("L-009", "DA-0006", "B-012", today.minusDays(4)), "B-012", "DA-0006"), // 時をかける少女 → 伊藤由美
+            Triple(Loan("L-010", "DA-0006", "B-025", today.minusDays(6)), "B-025", "DA-0006") // 十角館の殺人 → 伊藤由美
         )
     }
 }

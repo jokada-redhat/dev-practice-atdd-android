@@ -66,6 +66,7 @@ class LoanedArtifactsActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.return_success, Toast.LENGTH_SHORT).show()
                 loadArtifacts()
             }
+
             is ReturnBookResult.Failure -> {
                 Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
             }

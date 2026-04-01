@@ -16,24 +16,16 @@ class InMemoryMemberRepository : MemberRepository {
         return Result.success(member)
     }
 
-    override fun findById(id: String): Member? {
-        return members[id]
-    }
+    override fun findById(id: String): Member? = members[id]
 
-    override fun findByEmail(email: String): Member? {
-        return members.values.find { it.email == email }
-    }
+    override fun findByEmail(email: String): Member? = members.values.find { it.email == email }
 
-    override fun findAll(): List<Member> {
-        return members.values.toList()
-    }
+    override fun findAll(): List<Member> = members.values.toList()
 
-    override fun search(query: String): List<Member> {
-        return members.values.filter {
-            it.name.contains(query, ignoreCase = true) ||
+    override fun search(query: String): List<Member> = members.values.filter {
+        it.name.contains(query, ignoreCase = true) ||
             it.email.contains(query, ignoreCase = true) ||
             it.id.contains(query, ignoreCase = true)
-        }
     }
 
     override fun updateLoanCount(memberId: String, newCount: Int): Result<Unit> {

@@ -3,12 +3,7 @@ package com.example.libretta.member
 import com.example.libretta.model.Member
 import java.util.UUID
 
-data class RegisterMemberRequest(
-    val name: String,
-    val email: String,
-    val phone: String = "",
-    val address: String = ""
-)
+data class RegisterMemberRequest(val name: String, val email: String, val phone: String = "", val address: String = "")
 
 sealed class RegisterMemberResult {
     data class Success(val member: Member) : RegisterMemberResult()
@@ -16,9 +11,7 @@ sealed class RegisterMemberResult {
     data class ValidationError(val message: String) : RegisterMemberResult()
 }
 
-class RegisterMemberUseCase(
-    private val memberRepository: MemberRepository
-) {
+class RegisterMemberUseCase(private val memberRepository: MemberRepository) {
     fun execute(request: RegisterMemberRequest): RegisterMemberResult {
         // バリデーション
         if (request.name.isBlank()) {
@@ -68,7 +61,6 @@ class RegisterMemberUseCase(
         const val MAX_ID_GENERATION_ATTEMPTS = 10
     }
 
-    private fun isValidEmail(email: String): Boolean {
-        return email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))
-    }
+    private fun isValidEmail(email: String): Boolean =
+        email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))
 }

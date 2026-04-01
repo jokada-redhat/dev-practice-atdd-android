@@ -34,10 +34,12 @@ class TopActivity : AppCompatActivity() {
                     startActivity(Intent(this, DebugSettingsActivity::class.java))
                     true
                 }
+
                 R.id.action_logout -> {
                     handleLogout()
                     true
                 }
+
                 else -> false
             }
         }

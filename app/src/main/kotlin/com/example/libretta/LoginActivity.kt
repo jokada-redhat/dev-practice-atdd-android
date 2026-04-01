@@ -12,10 +12,10 @@ import com.example.libretta.auth.AuthApiClient
 import com.example.libretta.auth.AuthRepository
 import com.example.libretta.auth.AuthSkipper
 import com.example.libretta.auth.LoginUiState
-import com.example.libretta.auth.StubAuthRepository
 import com.example.libretta.auth.LoginUseCase
 import com.example.libretta.auth.LoginViewModel
 import com.example.libretta.auth.LoginViewModelFactory
+import com.example.libretta.auth.StubAuthRepository
 import com.example.libretta.session.SessionManager
 import com.example.libretta.session.SharedPreferencesSessionRepository
 
@@ -39,8 +39,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val app = application as LibrettaApplication
-        if (AuthSkipper.applyIfNeeded(app.skipAuthApi, sessionManager)
-            || sessionManager.isLoggedIn()) {
+        if (AuthSkipper.applyIfNeeded(app.skipAuthApi, sessionManager) ||
+            sessionManager.isLoggedIn()
+        ) {
             startActivity(Intent(this, TopActivity::class.java))
             finish()
             return

@@ -11,29 +11,19 @@ class InMemoryBookRepository : BookRepository {
         return Result.success(book)
     }
 
-    override fun findById(id: String): Book? {
-        return books[id]
-    }
+    override fun findById(id: String): Book? = books[id]
 
-    override fun findByTitle(title: String): Book? {
-        return books.values.find { it.title == title }
-    }
+    override fun findByTitle(title: String): Book? = books.values.find { it.title == title }
 
-    override fun findAll(): List<Book> {
-        return books.values.toList()
-    }
+    override fun findAll(): List<Book> = books.values.toList()
 
-    override fun search(query: String): List<Book> {
-        return books.values.filter {
-            it.title.contains(query, ignoreCase = true) ||
+    override fun search(query: String): List<Book> = books.values.filter {
+        it.title.contains(query, ignoreCase = true) ||
             it.author.contains(query, ignoreCase = true) ||
             it.isbn.contains(query, ignoreCase = true)
-        }
     }
 
-    override fun filterByStatus(status: BookStatus): List<Book> {
-        return books.values.filter { it.status == status }
-    }
+    override fun filterByStatus(status: BookStatus): List<Book> = books.values.filter { it.status == status }
 
     override fun updateStatus(bookId: String, status: BookStatus): Result<Unit> {
         val book = books[bookId]

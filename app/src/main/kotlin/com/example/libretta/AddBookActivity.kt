@@ -50,9 +50,11 @@ class AddBookActivity : AppCompatActivity() {
                     Toast.makeText(this, getString(R.string.book_added_success), Toast.LENGTH_LONG).show()
                     finish()
                 }
+
                 is RegisterBookResult.ValidationError -> {
                     editTitle.error = result.message
                 }
+
                 is RegisterBookResult.Failure -> {
                     Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
                 }

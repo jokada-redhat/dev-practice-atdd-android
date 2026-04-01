@@ -4,13 +4,15 @@ import com.example.libretta.book.InMemoryBookRepository
 import com.example.libretta.book.SearchBooksUseCase
 import com.example.libretta.model.Book
 import com.example.libretta.model.BookStatus
+import io.cucumber.datatable.DataTable
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
-import io.cucumber.datatable.DataTable
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 
 class BookCatalogSteps {
 

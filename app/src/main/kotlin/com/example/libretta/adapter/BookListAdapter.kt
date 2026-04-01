@@ -11,9 +11,8 @@ import com.example.libretta.R
 import com.example.libretta.model.Book
 import com.example.libretta.model.BookStatus
 
-class BookListAdapter(
-    private var books: List<Book> = emptyList()
-) : RecyclerView.Adapter<BookListAdapter.ViewHolder>() {
+class BookListAdapter(private var books: List<Book> = emptyList()) :
+    RecyclerView.Adapter<BookListAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textTitle: TextView = view.findViewById(R.id.textBookTitle)

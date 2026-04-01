@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.libretta.R
 import com.example.libretta.model.Member
 
-class MemberAdapter(
-    private var members: List<Member> = emptyList(),
-    private val onMemberClick: (Member) -> Unit = {}
-) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
+class MemberAdapter(private var members: List<Member> = emptyList(), private val onMemberClick: (Member) -> Unit = {}) :
+    RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textMemberId: TextView = view.findViewById(R.id.textMemberId)

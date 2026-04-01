@@ -6,13 +6,16 @@ import com.example.libretta.member.RegisterMemberRequest
 import com.example.libretta.member.RegisterMemberResult
 import com.example.libretta.member.RegisterMemberUseCase
 import com.example.libretta.model.Member
+import io.cucumber.datatable.DataTable
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
-import io.cucumber.datatable.DataTable
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 
 class MemberManagementSteps {
 
@@ -126,13 +129,14 @@ class MemberManagementSteps {
             is RegisterMemberResult.Failure -> {
                 CommonSteps.lastErrorMessage = result.errorMessage
             }
+
             is RegisterMemberResult.ValidationError -> {
                 CommonSteps.lastErrorMessage = result.message
             }
+
             else -> {}
         }
     }
-
 
     @And("会員リストに {string} が含まれていない")
     fun memberListDoesNotContain(name: String) {
@@ -151,6 +155,7 @@ class MemberManagementSteps {
             is RegisterMemberResult.ValidationError -> {
                 CommonSteps.lastErrorMessage = result.message
             }
+
             else -> {}
         }
     }

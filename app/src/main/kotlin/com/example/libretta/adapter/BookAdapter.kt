@@ -11,10 +11,8 @@ import com.example.libretta.R
 import com.example.libretta.model.Book
 import com.google.android.material.button.MaterialButton
 
-class BookAdapter(
-    private var books: List<Book> = emptyList(),
-    private val onBorrowClick: (Book) -> Unit = {}
-) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class BookAdapter(private var books: List<Book> = emptyList(), private val onBorrowClick: (Book) -> Unit = {}) :
+    RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
     class BookViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textBookTitle: TextView = view.findViewById(R.id.textBookTitle)
@@ -78,6 +76,8 @@ class BookAdapter(
     }
 
     enum class FilterType {
-        ALL, AVAILABLE, BORROWED
+        ALL,
+        AVAILABLE,
+        BORROWED
     }
 }

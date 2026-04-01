@@ -68,9 +68,11 @@ class AddMemberActivity : AppCompatActivity() {
                     ).show()
                     finish()
                 }
+
                 is RegisterMemberResult.Failure -> {
                     editMemberName.error = result.errorMessage
                 }
+
                 is RegisterMemberResult.ValidationError -> {
                     editMemberName.error = result.message
                 }

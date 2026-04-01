@@ -11,25 +11,15 @@ class InMemoryLoanRepository : LoanRepository {
         return Result.success(loan)
     }
 
-    override fun findById(id: String): Loan? {
-        return loans[id]
-    }
+    override fun findById(id: String): Loan? = loans[id]
 
-    override fun findByMemberId(memberId: String): List<Loan> {
-        return loans.values.filter { it.memberId == memberId }
-    }
+    override fun findByMemberId(memberId: String): List<Loan> = loans.values.filter { it.memberId == memberId }
 
-    override fun findByBookId(bookId: String): Loan? {
-        return loans.values.find { it.bookId == bookId }
-    }
+    override fun findByBookId(bookId: String): Loan? = loans.values.find { it.bookId == bookId }
 
-    override fun findActiveByBookId(bookId: String): Loan? {
-        return loans.values.find { it.bookId == bookId && !it.isReturned }
-    }
+    override fun findActiveByBookId(bookId: String): Loan? = loans.values.find { it.bookId == bookId && !it.isReturned }
 
-    override fun findAll(): List<Loan> {
-        return loans.values.toList()
-    }
+    override fun findAll(): List<Loan> = loans.values.toList()
 
     override fun returnBook(loanId: String, returnedDate: LocalDate): Result<Loan> {
         val loan = loans[loanId]

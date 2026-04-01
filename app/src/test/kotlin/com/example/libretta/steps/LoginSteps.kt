@@ -55,6 +55,7 @@ class LoginSteps {
             is LoginResult.Failure -> {
                 CommonSteps.lastErrorMessage = (loginResult as LoginResult.Failure).errorMessage
             }
+
             else -> {}
         }
     }
@@ -81,7 +82,6 @@ class LoginSteps {
         assertNotNull("トークンが null であってはならない", success.token)
         assertTrue("トークンが空であってはならない", success.token.isNotBlank())
     }
-
 
     @And("表示名 {string} が返される")
     fun displayNameIsReturned(expectedDisplayName: String) {

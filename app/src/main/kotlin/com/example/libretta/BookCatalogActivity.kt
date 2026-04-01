@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.libretta.adapter.BookAdapter
@@ -16,6 +15,7 @@ import com.example.libretta.model.Book
 import com.example.libretta.model.BookStatus
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class BookCatalogActivity : AppCompatActivity() {
 
@@ -124,6 +124,7 @@ class BookCatalogActivity : AppCompatActivity() {
                 startActivity(confirmIntent)
                 bookAdapter.updateBooks(app.bookRepository.findAll())
             }
+
             is BorrowBookResult.Failure -> {
                 Toast.makeText(this, result.errorMessage, Toast.LENGTH_SHORT).show()
             }
