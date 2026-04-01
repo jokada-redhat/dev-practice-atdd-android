@@ -28,14 +28,6 @@ class InMemoryMemberRepository : MemberRepository {
             it.id.contains(query, ignoreCase = true)
     }
 
-    override fun updateLoanCount(memberId: String, newCount: Int): Result<Unit> {
-        val member = members[memberId]
-            ?: return Result.failure(NoSuchElementException("会員が見つかりません"))
-
-        members[memberId] = member.copy(loanCount = newCount)
-        return Result.success(Unit)
-    }
-
     override fun delete(id: String): Result<Unit> {
         if (members.remove(id) == null) {
             return Result.failure(NoSuchElementException("会員が見つかりません"))

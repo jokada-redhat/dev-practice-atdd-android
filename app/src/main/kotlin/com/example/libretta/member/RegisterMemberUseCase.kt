@@ -32,8 +32,7 @@ class RegisterMemberUseCase(private val memberRepository: MemberRepository) {
             name = request.name,
             email = request.email,
             phone = request.phone,
-            address = request.address,
-            loanCount = 0
+            address = request.address
         )
 
         val result = memberRepository.save(member)

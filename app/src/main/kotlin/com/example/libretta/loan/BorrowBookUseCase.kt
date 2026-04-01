@@ -1,6 +1,5 @@
 package com.example.libretta.loan
 
-import android.util.Log
 import com.example.libretta.book.BookRepository
 import com.example.libretta.member.MemberRepository
 import com.example.libretta.model.BookStatus
@@ -20,12 +19,9 @@ class BorrowBookUseCase(
     private val bookRepository: BookRepository,
     private val memberRepository: MemberRepository
 ) {
-    private companion object {
-        const val TAG = "BorrowBookUseCase"
-    }
     fun execute(request: BorrowBookRequest): BorrowBookResult {
         // 会員の存在確認
-        val member = memberRepository.findById(request.memberId)
+        memberRepository.findById(request.memberId)
             ?: return BorrowBookResult.Failure("会員が見つかりません")
 
         // 書籍の存在確認
@@ -61,20 +57,6 @@ class BorrowBookUseCase(
             loanRepository.delete(loan.id)
             return BorrowBookResult.Failure(
                 updateBookResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
-            )
-        }
-
-        // 会員の貸出冊数を更新
-        val updateMemberResult = memberRepository.updateLoanCount(request.memberId, member.loanCount + 1)
-        if (updateMemberResult.isFailure) {
-            // ロールバック
-            loanRepository.delete(loan.id)
-            val rollback = bookRepository.updateStatus(request.bookId, BookStatus.AVAILABLE)
-            if (rollback.isFailure) {
-                Log.e(TAG, "ロールバック失敗: 書籍ステータス不整合の可能性", rollback.exceptionOrNull())
-            }
-            return BorrowBookResult.Failure(
-                updateMemberResult.exceptionOrNull()?.message ?: "会員情報の更新に失敗しました"
             )
         }
 

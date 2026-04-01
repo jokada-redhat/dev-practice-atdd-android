@@ -34,6 +34,9 @@ class InMemoryLoanRepository : LoanRepository {
         return Result.success(updatedLoan)
     }
 
+    override fun countActiveByMemberId(memberId: String): Int =
+        loans.values.count { it.memberId == memberId && !it.isReturned }
+
     override fun delete(id: String): Result<Unit> {
         if (loans.remove(id) == null) {
             return Result.failure(NoSuchElementException("貸出記録が見つかりません"))

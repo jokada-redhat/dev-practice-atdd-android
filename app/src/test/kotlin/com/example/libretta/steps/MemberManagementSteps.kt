@@ -1,5 +1,6 @@
 package com.example.libretta.steps
 
+import com.example.libretta.loan.InMemoryLoanRepository
 import com.example.libretta.member.InMemoryMemberRepository
 import com.example.libretta.member.ListMembersUseCase
 import com.example.libretta.member.RegisterMemberRequest
@@ -20,6 +21,7 @@ import org.junit.Assert.assertTrue
 class MemberManagementSteps {
 
     private val memberRepository = InMemoryMemberRepository()
+    private val loanRepository = InMemoryLoanRepository()
     private val registerMemberUseCase = RegisterMemberUseCase(memberRepository)
     private val listMembersUseCase = ListMembersUseCase(memberRepository)
 
@@ -31,6 +33,7 @@ class MemberManagementSteps {
     @Before
     fun setUp() {
         memberRepository.clear()
+        loanRepository.clear()
         registerResult = null
         memberList = emptyList()
         searchResults = emptyList()
@@ -62,7 +65,8 @@ class MemberManagementSteps {
         memberList = listMembersUseCase.execute()
         val member = memberList.find { it.name == name }
         assertNotNull("会員 $name が見つかりません", member)
-        assertEquals("貸出冊数が一致しません", loanCount, member?.loanCount)
+        val actualCount = loanRepository.countActiveByMemberId(member!!.id)
+        assertEquals("貸出冊数が一致しません", loanCount, actualCount)
     }
 
     @Given("以下の会員が登録されている:")
@@ -72,8 +76,7 @@ class MemberManagementSteps {
             val member = Member(
                 id = row["id"]!!,
                 name = row["name"]!!,
-                email = row["email"]!!,
-                loanCount = row["loanCount"]?.toInt() ?: 0
+                email = row["email"]!!
             )
             memberRepository.save(member)
         }

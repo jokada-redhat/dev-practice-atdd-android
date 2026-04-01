@@ -61,8 +61,7 @@ class BorrowingFlowSteps {
         val member = Member(
             id = id,
             name = name,
-            email = "$id@example.com",
-            loanCount = 0
+            email = "$id@example.com"
         )
         memberRepository.save(member)
     }
@@ -71,7 +70,8 @@ class BorrowingFlowSteps {
     fun memberCurrentLoanCountIs(memberId: String, loanCount: Int) {
         val member = memberRepository.findById(memberId)
         assertNotNull("会員が見つかりません", member)
-        assertEquals("貸出冊数が一致しません", loanCount, member?.loanCount)
+        val actualCount = loanRepository.countActiveByMemberId(memberId)
+        assertEquals("貸出冊数が一致しません", loanCount, actualCount)
     }
 
     @And("書籍 {string} が貸出可能である")
@@ -113,7 +113,8 @@ class BorrowingFlowSteps {
     fun memberLoanCountBecomes(memberId: String, loanCount: Int) {
         val member = memberRepository.findById(memberId)
         assertNotNull("会員が見つかりません", member)
-        assertEquals("貸出冊数が一致しません", loanCount, member?.loanCount)
+        val actualCount = loanRepository.countActiveByMemberId(memberId)
+        assertEquals("貸出冊数が一致しません", loanCount, actualCount)
     }
 
     @And("貸出記録が作成される")
