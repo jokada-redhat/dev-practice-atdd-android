@@ -1,20 +1,21 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("jacoco")
 }
 
 android {
-    namespace = "com.example.atdd"
+    namespace = "com.example.libretta"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.atdd"
+        applicationId = "com.example.libretta"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.example.atdd.test.TestRunner"
+        testInstrumentationRunner = "com.example.libretta.test.TestRunner"
     }
 
     buildFeatures {
@@ -54,6 +55,42 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+
+tasks.withType<Test> {
+    extensions.configure(JacocoTaskExtension::class) {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
+
+    val mainSrc = "$projectDir/src/main/java"
+    val debugTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+        exclude(
+            "**/R.class",
+            "**/R\$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            // UI層 (Instrumented テストでカバー)
+            "**/*Activity.*",
+            "**/debug/**",
+        )
+    }
+    val execData = fileTree(layout.buildDirectory) {
+        include("jacoco/testDebugUnitTest.exec")
+    }
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(files(execData))
 }
 
 dependencies {
