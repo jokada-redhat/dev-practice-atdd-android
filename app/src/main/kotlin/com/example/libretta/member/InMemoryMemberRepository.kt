@@ -6,25 +6,16 @@ class InMemoryMemberRepository : MemberRepository {
     private val members = mutableMapOf<String, Member>()
 
     override fun save(member: Member): Result<Member> {
-        // メールアドレスの重複チェック
-        val existingMember = findByEmail(member.email)
-        if (existingMember != null && existingMember.id != member.id) {
-            return Result.failure(IllegalArgumentException("このメールアドレスは既に登録されています"))
-        }
-
         members[member.id] = member
         return Result.success(member)
     }
 
     override fun findById(id: String): Member? = members[id]
 
-    override fun findByEmail(email: String): Member? = members.values.find { it.email == email }
-
     override fun findAll(): List<Member> = members.values.toList()
 
     override fun search(query: String): List<Member> = members.values.filter {
         it.name.contains(query, ignoreCase = true) ||
-            it.email.contains(query, ignoreCase = true) ||
             it.id.contains(query, ignoreCase = true)
     }
 

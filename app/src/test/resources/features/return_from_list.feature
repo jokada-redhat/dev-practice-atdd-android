@@ -10,7 +10,7 @@ Feature: 貸出一覧からの返却
     When 貸出一覧で書籍 "The Infinite Library" の返却ボタンを押す
     Then 書籍 "The Infinite Library" は貸出可能である
     And 会員 "DA-8821" の貸出冊数が 0 になる
-    And 貸出記録の返却日が記録される
+    And 貸出記録が削除される
     And 貸出一覧から書籍 "The Infinite Library" が消える
 
   Scenario: 返却後に貸出中の冊数表示が更新される

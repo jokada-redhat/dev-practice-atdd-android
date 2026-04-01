@@ -3,7 +3,6 @@ package com.example.libretta.loan
 import com.example.libretta.book.BookRepository
 import com.example.libretta.member.MemberRepository
 import com.example.libretta.model.Loan
-import java.time.LocalDate
 
 data class ReturnBookRequest(val memberId: String, val bookId: String)
 
@@ -35,17 +34,14 @@ class ReturnBookUseCase(
             return ReturnBookResult.Failure("この書籍は別の会員が借りています")
         }
 
-        // 返却処理
-        val returnedDate = LocalDate.now()
-        val returnResult = loanRepository.returnBook(activeLoan.id, returnedDate)
-        val returnedLoan = if (returnResult.isSuccess) {
-            returnResult.getOrThrow()
-        } else {
+        // 返却処理（貸出記録を削除）
+        val deleteResult = loanRepository.delete(activeLoan.id)
+        if (deleteResult.isFailure) {
             return ReturnBookResult.Failure(
-                returnResult.exceptionOrNull()?.message ?: "返却処理に失敗しました"
+                deleteResult.exceptionOrNull()?.message ?: "返却処理に失敗しました"
             )
         }
 
-        return ReturnBookResult.Success(returnedLoan)
+        return ReturnBookResult.Success(activeLoan)
     }
 }

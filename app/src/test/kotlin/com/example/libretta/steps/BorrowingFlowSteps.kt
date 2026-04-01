@@ -61,8 +61,7 @@ class BorrowingFlowSteps {
     fun memberIsRegistered(name: String, id: String) {
         val member = Member(
             id = id,
-            name = name,
-            email = "$id@example.com"
+            name = name
         )
         memberRepository.save(member)
     }
@@ -124,7 +123,6 @@ class BorrowingFlowSteps {
             is BorrowBookResult.Success -> {
                 val loan = loans.find { it.id == result.loan.id }
                 assertNotNull("貸出記録が見つかりません", loan)
-                assertNull("返却日が設定されていないべき", loan?.returnedDate)
             }
 
             else -> fail("貸出が成功していません")
@@ -198,11 +196,12 @@ class BorrowingFlowSteps {
         returnResult = returnBookUseCase.execute(request)
     }
 
-    @And("貸出記録の返却日が記録される")
-    fun loanRecordHasReturnDate() {
+    @And("貸出記録が削除される")
+    fun loanRecordIsDeleted() {
         when (val result = returnResult) {
             is ReturnBookResult.Success -> {
-                assertNotNull("返却日が記録されていません", result.loan.returnedDate)
+                val loan = loanRepository.findById(result.loan.id)
+                assertNull("貸出記録が削除されていません", loan)
             }
 
             else -> fail("返却が成功していません")
@@ -268,14 +267,14 @@ class BorrowingFlowSteps {
     @Then("貸出一覧から書籍 {string} が消える")
     fun bookDisappearsFromLoanedList(title: String) {
         val bookId = title.hashCode().toString()
-        val activeLoans = loanRepository.findAll().filter { !it.isReturned }
+        val activeLoans = loanRepository.findAll()
         val found = activeLoans.any { it.bookId == bookId }
         assertFalse("書籍がまだ貸出一覧に残っています", found)
     }
 
     @Then("貸出一覧の件数表示が {string} になる")
     fun loanedListCountDisplayIs(expectedText: String) {
-        val activeLoans = loanRepository.findAll().filter { !it.isReturned }
+        val activeLoans = loanRepository.findAll()
         val actualText = when (activeLoans.size) {
             0 -> "0冊 貸し出し中"
             1 -> "1冊 貸し出し中"
@@ -286,7 +285,7 @@ class BorrowingFlowSteps {
 
     @Then("貸出一覧に {string} と表示される")
     fun loanedListShowsMessage(expectedMessage: String) {
-        val activeLoans = loanRepository.findAll().filter { !it.isReturned }
+        val activeLoans = loanRepository.findAll()
         assertTrue("貸出一覧が空ではありません", activeLoans.isEmpty())
     }
 }

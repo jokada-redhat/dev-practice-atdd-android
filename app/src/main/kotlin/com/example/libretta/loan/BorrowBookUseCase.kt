@@ -37,8 +37,7 @@ class BorrowBookUseCase(
             id = UUID.randomUUID().toString(),
             memberId = request.memberId,
             bookId = request.bookId,
-            borrowedDate = LocalDate.now(),
-            returnedDate = null
+            borrowedDate = LocalDate.now()
         )
 
         // 貸出記録を保存

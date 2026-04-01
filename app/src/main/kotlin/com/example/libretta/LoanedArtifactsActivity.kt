@@ -74,7 +74,7 @@ class LoanedArtifactsActivity : AppCompatActivity() {
     }
 
     private fun loadArtifacts() {
-        val loans = app.loanRepository.findAll().filter { !it.isReturned }
+        val loans = app.loanRepository.findAll()
         val artifacts = loans.mapNotNull { loan ->
             val book = app.bookRepository.findById(loan.bookId) ?: return@mapNotNull null
             val member = app.memberRepository.findById(loan.memberId) ?: return@mapNotNull null

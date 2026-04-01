@@ -55,7 +55,7 @@ class ReturnBookSteps {
     @Given("返却用に会員 {string} \\(ID: {string}) が登録されている")
     fun memberIsRegisteredForReturn(name: String, id: String) {
         memberRepository.save(
-            Member(id = id, name = name, email = "$id@example.com")
+            Member(id = id, name = name)
         )
     }
 
@@ -127,7 +127,7 @@ class ReturnBookSteps {
     }
 
     private fun loadArtifacts() {
-        val loans = loanRepository.findAll().filter { !it.isReturned }
+        val loans = loanRepository.findAll()
         allArtifacts = loans.mapNotNull { loan ->
             val book = bookRepository.findById(loan.bookId) ?: return@mapNotNull null
             val member = memberRepository.findById(loan.memberId) ?: return@mapNotNull null
