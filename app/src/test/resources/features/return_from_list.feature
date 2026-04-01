@@ -3,7 +3,7 @@ Feature: 貸出一覧からの返却
 
   Background:
     Given 会員 "山田太郎" (ID: "DA-8821") が登録されている
-    And 書籍 "The Infinite Library" が貸出可能である
+    And 書籍 "The Infinite Library" が登録されている
 
   Scenario: 貸出一覧から書籍を返却する
     Given 会員 "DA-8821" が書籍 "The Infinite Library" を既に借りている
@@ -15,7 +15,7 @@ Feature: 貸出一覧からの返却
 
   Scenario: 返却後に貸出中の冊数表示が更新される
     Given 会員 "DA-8821" が書籍 "The Infinite Library" を既に借りている
-    And 書籍 "Foundation" が貸出可能である
+    And 書籍 "Foundation" が登録されている
     And 会員 "DA-8821" が書籍 "Foundation" を既に借りている
     When 貸出一覧で書籍 "The Infinite Library" の返却ボタンを押す
     Then 貸出一覧の件数表示が "1冊 貸し出し中" になる
