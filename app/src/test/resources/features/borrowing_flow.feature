@@ -64,21 +64,21 @@ Feature: 貸し出しフロー
 
   Scenario: 貸出上限ぴったりまで借りられる
     Given 会員 "山田太郎" (ID: "DA-8821") が登録されている
-    And 会員 "DA-8821" の現在の貸出冊数が 2 に設定されている
+    And 会員 "DA-8821" が 2 冊借りている状態である
     And 書籍 "Neuromancer" が貸出可能である
     When 会員 "DA-8821" が書籍 "Neuromancer" を借りる
     Then 会員 "DA-8821" の貸出冊数が 3 になる
 
   Scenario: 貸出上限に達している場合は借りられない
     Given 会員 "山田太郎" (ID: "DA-8821") が登録されている
-    And 会員 "DA-8821" の現在の貸出冊数が 3 に設定されている
+    And 会員 "DA-8821" が 3 冊借りている状態である
     And 書籍 "Neuromancer" が貸出可能である
     When 会員 "DA-8821" が書籍 "Neuromancer" を借りようとする
     Then エラーメッセージ "貸出上限（3冊）に達しています" が返される
 
   Scenario: 返却すれば再び借りられる
     Given 会員 "山田太郎" (ID: "DA-8821") が登録されている
-    And 会員 "DA-8821" の現在の貸出冊数が 2 に設定されている
+    And 会員 "DA-8821" が 2 冊借りている状態である
     And 会員 "DA-8821" が書籍 "The Infinite Library" を既に借りている
     When 会員 "DA-8821" が書籍 "The Infinite Library" を返却する
     Then 会員 "DA-8821" の貸出冊数が 2 になる
