@@ -23,16 +23,12 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField("boolean", "SKIP_AUTH_API", "true")
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("boolean", "SKIP_AUTH_API", "false")
         }
     }
 

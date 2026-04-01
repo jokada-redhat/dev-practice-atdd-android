@@ -10,7 +10,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.libretta.auth.AuthApiClient
 import com.example.libretta.auth.AuthRepository
-import com.example.libretta.auth.AuthSkipper
 import com.example.libretta.auth.LoginUiState
 import com.example.libretta.auth.LoginUseCase
 import com.example.libretta.auth.LoginViewModel
@@ -38,10 +37,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val app = application as LibrettaApplication
-        if (AuthSkipper.applyIfNeeded(app.skipAuthApi, sessionManager) ||
-            sessionManager.isLoggedIn()
-        ) {
+        if (sessionManager.isLoggedIn()) {
             startActivity(Intent(this, TopActivity::class.java))
             finish()
             return

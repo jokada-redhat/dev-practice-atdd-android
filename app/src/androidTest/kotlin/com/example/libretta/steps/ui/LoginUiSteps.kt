@@ -50,7 +50,6 @@ class LoginUiSteps {
     @Given("未ログイン状態になっている")
     fun clearSession() {
         val app = TestHelper.getApp()
-        app.skipAuthApi = false
         app.getSharedPreferences("atdd_session", Context.MODE_PRIVATE)
             .edit()
             .clear()
