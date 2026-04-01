@@ -1,6 +1,5 @@
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
-    <color name="ic_launcher_foreground">#1B5E20</color>
+    <color name="ic_launcher_background">#1A43BF</color>
 
     <!-- Libretta Color Palette -->
     <color name="primary">#1A43BF</color>
