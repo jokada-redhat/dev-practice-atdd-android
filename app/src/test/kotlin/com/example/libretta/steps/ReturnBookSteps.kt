@@ -55,7 +55,7 @@ class ReturnBookSteps {
     @Given("返却用に会員 {string} \\(ID: {string}) が登録されている")
     fun memberIsRegisteredForReturn(name: String, id: String) {
         memberRepository.save(
-            Member(id = id, name = name, email = "$id@example.com", loanCount = 0)
+            Member(id = id, name = name, email = "$id@example.com")
         )
     }
 
@@ -124,7 +124,8 @@ class ReturnBookSteps {
     fun memberLoanCountAfterReturn(memberId: String, loanCount: Int) {
         val member = memberRepository.findById(memberId)
         assertNotNull("会員が見つかりません", member)
-        assertEquals("貸出冊数が一致しません", loanCount, member?.loanCount)
+        val actualCount = loanRepository.countActiveByMemberId(memberId)
+        assertEquals("貸出冊数が一致しません", loanCount, actualCount)
     }
 
     private fun loadArtifacts() {

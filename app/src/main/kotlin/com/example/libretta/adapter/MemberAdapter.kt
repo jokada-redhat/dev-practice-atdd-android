@@ -7,10 +7,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.libretta.R
+import com.example.libretta.loan.LoanRepository
 import com.example.libretta.model.Member
 
-class MemberAdapter(private var members: List<Member> = emptyList(), private val onMemberClick: (Member) -> Unit = {}) :
-    RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
+class MemberAdapter(
+    private var members: List<Member> = emptyList(),
+    private val loanRepository: LoanRepository,
+    private val onMemberClick: (Member) -> Unit = {
+    }
+) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
 
     class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textMemberId: TextView = view.findViewById(R.id.textMemberId)
@@ -30,10 +35,11 @@ class MemberAdapter(private var members: List<Member> = emptyList(), private val
 
         holder.textMemberId.text = context.getString(R.string.member_id_prefix, member.id)
         holder.textMemberName.text = member.name
-        holder.textLoanCount.text = when (member.loanCount) {
+        val loanCount = loanRepository.countActiveByMemberId(member.id)
+        holder.textLoanCount.text = when (loanCount) {
             0 -> context.getString(R.string.loan_count_zero)
             1 -> context.getString(R.string.loan_count_single)
-            else -> context.getString(R.string.loan_count_multiple, member.loanCount)
+            else -> context.getString(R.string.loan_count_multiple, loanCount)
         }
 
         holder.itemView.setOnClickListener {

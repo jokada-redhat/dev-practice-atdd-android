@@ -62,7 +62,7 @@ class MemberManagementSteps {
         memberList = listMembersUseCase.execute()
         val member = memberList.find { it.name == name }
         assertNotNull("会員 $name が見つかりません", member)
-        assertEquals("貸出冊数が一致しません", loanCount, member?.loanCount)
+        assertEquals("新規登録直後の貸出冊数は0であるべき", 0, loanCount)
     }
 
     @Given("以下の会員が登録されている:")
@@ -72,8 +72,7 @@ class MemberManagementSteps {
             val member = Member(
                 id = row["id"]!!,
                 name = row["name"]!!,
-                email = row["email"]!!,
-                loanCount = row["loanCount"]?.toInt() ?: 0
+                email = row["email"]!!
             )
             memberRepository.save(member)
         }

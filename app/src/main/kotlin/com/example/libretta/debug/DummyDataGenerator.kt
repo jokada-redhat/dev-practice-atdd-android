@@ -38,13 +38,9 @@ class DummyDataGenerator(
 
     private fun loadLoans() {
         val today = LocalDate.now()
-        loans(today).forEach { (loan, bookId, memberId) ->
+        loans(today).forEach { (loan, bookId, _) ->
             loanRepository.save(loan)
             bookRepository.updateStatus(bookId, BookStatus.BORROWED)
-            val member = memberRepository.findById(memberId)
-            if (member != null) {
-                memberRepository.updateLoanCount(memberId, member.loanCount + 1)
-            }
         }
     }
 

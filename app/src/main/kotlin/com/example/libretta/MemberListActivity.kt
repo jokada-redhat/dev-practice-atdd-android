@@ -43,7 +43,7 @@ class MemberListActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMembers)
 
-        memberAdapter = MemberAdapter(app.memberRepository.findAll()) { member ->
+        memberAdapter = MemberAdapter(app.memberRepository.findAll(), app.loanRepository) { member ->
             // メンバー選択時に書籍一覧画面に遷移
             val intent = Intent(this, BookCatalogActivity::class.java).apply {
                 putExtra("memberName", member.name)

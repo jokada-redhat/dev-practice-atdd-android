@@ -8,7 +8,6 @@ interface MemberRepository {
     fun findByEmail(email: String): Member?
     fun findAll(): List<Member>
     fun search(query: String): List<Member>
-    fun updateLoanCount(memberId: String, newCount: Int): Result<Unit>
     fun delete(id: String): Result<Unit>
     fun clear()
 }
