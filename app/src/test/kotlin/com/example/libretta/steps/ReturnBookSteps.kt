@@ -11,7 +11,6 @@ import com.example.libretta.loan.ReturnBookResult
 import com.example.libretta.loan.ReturnBookUseCase
 import com.example.libretta.member.InMemoryMemberRepository
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 import com.example.libretta.model.Member
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
@@ -20,6 +19,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 
 class ReturnBookSteps {
@@ -66,8 +66,7 @@ class ReturnBookSteps {
             title = title,
             author = "Test Author",
             isbn = isbn,
-            publicationYear = "2024",
-            status = BookStatus.AVAILABLE
+            publicationYear = "2024"
         )
         bookRepository.save(book)
         val result = borrowBookUseCase.execute(BorrowBookRequest(memberId = memberId, bookId = book.id))
@@ -112,12 +111,11 @@ class ReturnBookSteps {
         filteredArtifacts = allArtifacts
     }
 
-    @Then("返却後の書籍 {string} のステータスが {string} である")
-    fun bookStatusAfterReturn(title: String, statusString: String) {
-        val book = bookRepository.findById(title.hashCode().toString())
-        assertNotNull("書籍が見つかりません", book)
-        val expected = BookStatus.valueOf(statusString.uppercase())
-        assertEquals("書籍ステータスが一致しません", expected, book?.status)
+    @Then("返却後の書籍 {string} は貸出可能である")
+    fun bookIsAvailableAfterReturn(title: String) {
+        val bookId = title.hashCode().toString()
+        val activeLoan = loanRepository.findActiveByBookId(bookId)
+        assertNull("書籍がまだ貸出中です", activeLoan)
     }
 
     @And("返却後の会員 {string} の貸出冊数が {int} である")

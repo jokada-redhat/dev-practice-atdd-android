@@ -13,5 +13,6 @@ interface LoanRepository {
     fun returnBook(loanId: String, returnedDate: LocalDate): Result<Loan>
     fun delete(id: String): Result<Unit>
     fun countActiveByMemberId(memberId: String): Int
+    fun findBorrowedBookIds(): Set<String>
     fun clear()
 }

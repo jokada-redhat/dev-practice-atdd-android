@@ -5,7 +5,6 @@ import com.example.libretta.book.RegisterBookRequest
 import com.example.libretta.book.RegisterBookResult
 import com.example.libretta.book.RegisterBookUseCase
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 import io.cucumber.datatable.DataTable
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
@@ -42,8 +41,7 @@ class BookManagementSteps {
                 title = row["title"]!!,
                 author = row["author"]!!,
                 isbn = row["isbn"]!!,
-                publicationYear = row["year"] ?: "2024",
-                status = BookStatus.AVAILABLE
+                publicationYear = row["year"] ?: "2024"
             )
             bookRepository.save(book)
         }

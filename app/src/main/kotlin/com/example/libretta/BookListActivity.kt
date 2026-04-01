@@ -45,7 +45,7 @@ class BookListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = BookListAdapter()
+        adapter = BookListAdapter(loanRepository = app.loanRepository)
         findViewById<RecyclerView>(R.id.recyclerViewBooks).apply {
             layoutManager = LinearLayoutManager(this@BookListActivity)
             adapter = this@BookListActivity.adapter

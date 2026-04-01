@@ -1,9 +1,9 @@
 package com.example.libretta.book
 
+import com.example.libretta.loan.LoanRepository
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
 
-class SearchBooksUseCase(private val bookRepository: BookRepository) {
+class SearchBooksUseCase(private val bookRepository: BookRepository, private val loanRepository: LoanRepository) {
     fun execute(): List<Book> = bookRepository.findAll()
 
     fun search(query: String): List<Book> {
@@ -13,14 +13,12 @@ class SearchBooksUseCase(private val bookRepository: BookRepository) {
         return bookRepository.search(query)
     }
 
-    fun filterByStatus(status: BookStatus): List<Book> = bookRepository.filterByStatus(status)
-
     fun filterByStatus(statusString: String): List<Book> {
-        val status = when (statusString.uppercase()) {
-            "AVAILABLE" -> BookStatus.AVAILABLE
-            "BORROWED" -> BookStatus.BORROWED
-            else -> return execute()
+        val borrowedBookIds = loanRepository.findBorrowedBookIds()
+        return when (statusString.uppercase()) {
+            "AVAILABLE" -> bookRepository.findAll().filter { it.id !in borrowedBookIds }
+            "BORROWED" -> bookRepository.findAll().filter { it.id in borrowedBookIds }
+            else -> execute()
         }
-        return filterByStatus(status)
     }
 }

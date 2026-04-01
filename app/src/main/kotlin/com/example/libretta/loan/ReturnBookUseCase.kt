@@ -2,7 +2,6 @@ package com.example.libretta.loan
 
 import com.example.libretta.book.BookRepository
 import com.example.libretta.member.MemberRepository
-import com.example.libretta.model.BookStatus
 import com.example.libretta.model.Loan
 import java.time.LocalDate
 
@@ -44,16 +43,6 @@ class ReturnBookUseCase(
         } else {
             return ReturnBookResult.Failure(
                 returnResult.exceptionOrNull()?.message ?: "返却処理に失敗しました"
-            )
-        }
-
-        // 書籍のステータスを更新
-        val updateBookResult = bookRepository.updateStatus(request.bookId, BookStatus.AVAILABLE)
-        if (updateBookResult.isFailure) {
-            // ロールバック
-            loanRepository.save(activeLoan)
-            return ReturnBookResult.Failure(
-                updateBookResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
             )
         }
 

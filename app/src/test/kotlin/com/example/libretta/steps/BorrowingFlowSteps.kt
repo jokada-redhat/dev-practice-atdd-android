@@ -10,13 +10,14 @@ import com.example.libretta.loan.ReturnBookResult
 import com.example.libretta.loan.ReturnBookUseCase
 import com.example.libretta.member.InMemoryMemberRepository
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
+import com.example.libretta.model.Loan
 import com.example.libretta.model.Member
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
+import java.time.LocalDate
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -81,8 +82,7 @@ class BorrowingFlowSteps {
             title = title,
             author = "Test Author",
             isbn = "978-0000000000",
-            publicationYear = "2024",
-            status = BookStatus.AVAILABLE
+            publicationYear = "2024"
         )
         bookRepository.save(book)
     }
@@ -94,19 +94,18 @@ class BorrowingFlowSteps {
         borrowResult = borrowBookUseCase.execute(request)
     }
 
-    @Then("書籍 {string} のステータスが {string} になる")
-    fun bookStatusIs(title: String, statusString: String) {
+    @Then("書籍 {string} は貸出中である")
+    fun bookIsBorrowed(title: String) {
         val bookId = title.hashCode().toString()
-        val book = bookRepository.findById(bookId)
-        assertNotNull("書籍が見つかりません", book)
+        val activeLoan = loanRepository.findActiveByBookId(bookId)
+        assertNotNull("書籍が貸出中ではありません", activeLoan)
+    }
 
-        val expectedStatus = when (statusString.uppercase()) {
-            "AVAILABLE" -> BookStatus.AVAILABLE
-            "BORROWED" -> BookStatus.BORROWED
-            else -> fail("不正なステータス: $statusString")
-        }
-
-        assertEquals("書籍ステータスが一致しません", expectedStatus, book?.status)
+    @Then("書籍 {string} は貸出可能である")
+    fun bookIsAvailableAfterAction(title: String) {
+        val bookId = title.hashCode().toString()
+        val activeLoan = loanRepository.findActiveByBookId(bookId)
+        assertNull("書籍がまだ貸出中です", activeLoan)
     }
 
     @And("会員 {string} の貸出冊数が {int} になる")
@@ -134,15 +133,23 @@ class BorrowingFlowSteps {
 
     @And("書籍 {string} が既に借りられている")
     fun bookIsAlreadyBorrowed(title: String) {
+        val bookId = title.hashCode().toString()
         val book = Book(
-            id = title.hashCode().toString(),
+            id = bookId,
             title = title,
             author = "Test Author",
             isbn = "978-0000000000",
-            publicationYear = "2024",
-            status = BookStatus.BORROWED
+            publicationYear = "2024"
         )
         bookRepository.save(book)
+        // ダミーの貸出記録を作成
+        val loan = Loan(
+            id = "dummy-loan-$bookId",
+            memberId = "dummy-member",
+            bookId = bookId,
+            borrowedDate = LocalDate.now()
+        )
+        loanRepository.save(loan)
     }
 
     @When("会員 {string} が書籍 {string} を借りようとする")
@@ -161,9 +168,9 @@ class BorrowingFlowSteps {
         }
     }
 
-    @And("書籍 {string} のステータスが {string} のまま変わらない")
-    fun bookStatusRemainsUnchanged(title: String, statusString: String) {
-        bookStatusIs(title, statusString)
+    @And("書籍 {string} は貸出中のままである")
+    fun bookStatusRemainsUnchanged(title: String) {
+        bookIsBorrowed(title)
     }
 
     @And("会員 {string} が書籍 {string} を既に借りている")

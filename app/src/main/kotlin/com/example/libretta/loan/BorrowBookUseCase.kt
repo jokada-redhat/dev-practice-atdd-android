@@ -2,7 +2,6 @@ package com.example.libretta.loan
 
 import com.example.libretta.book.BookRepository
 import com.example.libretta.member.MemberRepository
-import com.example.libretta.model.BookStatus
 import com.example.libretta.model.Loan
 import java.time.LocalDate
 import java.util.UUID
@@ -25,11 +24,11 @@ class BorrowBookUseCase(
             ?: return BorrowBookResult.Failure("会員が見つかりません")
 
         // 書籍の存在確認
-        val book = bookRepository.findById(request.bookId)
+        bookRepository.findById(request.bookId)
             ?: return BorrowBookResult.Failure("書籍が見つかりません")
 
         // 書籍の貸出状態確認
-        if (book.status == BookStatus.BORROWED) {
+        if (loanRepository.findActiveByBookId(request.bookId) != null) {
             return BorrowBookResult.Failure("この書籍は既に貸出中です")
         }
 
@@ -47,16 +46,6 @@ class BorrowBookUseCase(
         if (saveResult.isFailure) {
             return BorrowBookResult.Failure(
                 saveResult.exceptionOrNull()?.message ?: "貸出記録の保存に失敗しました"
-            )
-        }
-
-        // 書籍のステータスを更新
-        val updateBookResult = bookRepository.updateStatus(request.bookId, BookStatus.BORROWED)
-        if (updateBookResult.isFailure) {
-            // ロールバック
-            loanRepository.delete(loan.id)
-            return BorrowBookResult.Failure(
-                updateBookResult.exceptionOrNull()?.message ?: "書籍ステータスの更新に失敗しました"
             )
         }
 

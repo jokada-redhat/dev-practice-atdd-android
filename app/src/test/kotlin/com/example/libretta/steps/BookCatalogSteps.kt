@@ -2,14 +2,16 @@ package com.example.libretta.steps
 
 import com.example.libretta.book.InMemoryBookRepository
 import com.example.libretta.book.SearchBooksUseCase
+import com.example.libretta.loan.InMemoryLoanRepository
 import com.example.libretta.model.Book
-import com.example.libretta.model.BookStatus
+import com.example.libretta.model.Loan
 import io.cucumber.datatable.DataTable
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
+import java.time.LocalDate
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -17,7 +19,8 @@ import org.junit.Assert.assertTrue
 class BookCatalogSteps {
 
     private val bookRepository = InMemoryBookRepository()
-    private val searchBooksUseCase = SearchBooksUseCase(bookRepository)
+    private val loanRepository = InMemoryLoanRepository()
+    private val searchBooksUseCase = SearchBooksUseCase(bookRepository, loanRepository)
 
     private var bookList: List<Book> = emptyList()
     private var searchResults: List<Book> = emptyList()
@@ -25,6 +28,7 @@ class BookCatalogSteps {
     @Before
     fun setUp() {
         bookRepository.clear()
+        loanRepository.clear()
         bookList = emptyList()
         searchResults = emptyList()
     }
@@ -33,22 +37,27 @@ class BookCatalogSteps {
     fun booksAreRegistered(dataTable: DataTable) {
         val books = dataTable.asMaps()
         for (row in books) {
-            val status = when (row["status"]?.uppercase()) {
-                "AVAILABLE" -> BookStatus.AVAILABLE
-                "BORROWED" -> BookStatus.BORROWED
-                else -> BookStatus.AVAILABLE
-            }
-
             val book = Book(
-                id = row["title"]!!.hashCode().toString(), // IDは title から生成
+                id = row["title"]!!.hashCode().toString(),
                 title = row["title"]!!,
                 author = row["author"]!!,
                 isbn = row["isbn"]!!,
-                publicationYear = row["publicationYear"]!!,
-                status = status
+                publicationYear = row["publicationYear"]!!
             )
             bookRepository.save(book)
         }
+    }
+
+    @And("書籍 {string} が貸出中になっている")
+    fun bookIsBorrowed(title: String) {
+        val bookId = title.hashCode().toString()
+        val loan = Loan(
+            id = "dummy-loan-$bookId",
+            memberId = "dummy-member",
+            bookId = bookId,
+            borrowedDate = LocalDate.now()
+        )
+        loanRepository.save(loan)
     }
 
     @When("書籍一覧を取得する")
@@ -61,9 +70,14 @@ class BookCatalogSteps {
         assertEquals("書籍数が一致しません", count, bookList.size)
     }
 
-    @When("書籍一覧を {string} でフィルタする")
-    fun filterBooksByStatus(statusString: String) {
-        bookList = searchBooksUseCase.filterByStatus(statusString)
+    @When("貸出可能な書籍でフィルタする")
+    fun filterByAvailable() {
+        bookList = searchBooksUseCase.filterByStatus("AVAILABLE")
+    }
+
+    @When("貸出中の書籍でフィルタする")
+    fun filterByBorrowed() {
+        bookList = searchBooksUseCase.filterByStatus("BORROWED")
     }
 
     @And("書籍リストに {string} が含まれていない")
