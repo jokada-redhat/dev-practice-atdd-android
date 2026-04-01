@@ -12,4 +12,3 @@ data class Loan(
     val isReturned: Boolean
         get() = returnedDate != null
 }
-５

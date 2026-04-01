@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/surface">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -88,21 +87,16 @@
             android:padding="48dp"
             android:visibility="gone">
 
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginBottom="16dp"
-                android:src="@drawable/ic_menu_book"
-                android:tint="@color/outline"
-                android:contentDescription="@string/book_list_empty" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/book_list_empty"
                 android:textSize="16sp"
                 android:textColor="@color/on_surface_variant"
-                android:gravity="center" />
+                android:gravity="center"
+                app:drawableTopCompat="@drawable/ic_menu_book"
+                android:drawablePadding="16dp"
+                app:drawableTint="@color/outline" />
 
         </LinearLayout>
 

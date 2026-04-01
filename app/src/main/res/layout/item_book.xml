@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:textAllCaps="true"
                 android:letterSpacing="0.1"
@@ -67,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:baselineAligned="false"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
@@ -80,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/isbn_label"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     android:textColor="@color/outline"
                     android:textAllCaps="true"
                     android:textStyle="bold"
@@ -106,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/publication_label"
-                    android:textSize="10sp"
+                    android:textSize="11sp"
                     android:textColor="@color/outline"
                     android:textAllCaps="true"
                     android:textStyle="bold"

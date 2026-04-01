@@ -61,7 +61,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_chevron_right"
-            android:tint="@color/on_surface_variant"
+            app:tint="@color/on_surface_variant"
             android:contentDescription="@string/book_catalog_title" />
 
     </LinearLayout>

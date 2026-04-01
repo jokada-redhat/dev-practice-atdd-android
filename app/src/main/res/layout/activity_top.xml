@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/surface">
+    android:layout_height="match_parent">
 
     <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
@@ -57,7 +56,7 @@
                         android:layout_height="48dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_person"
-                        android:tint="@color/primary"
+                        app:tint="@color/primary"
                         android:contentDescription="@string/librarian_profile" />
 
                     <LinearLayout
@@ -114,7 +113,7 @@
                         android:layout_height="64dp"
                         android:layout_marginBottom="16dp"
                         android:src="@drawable/ic_menu_book"
-                        android:tint="@color/on_primary"
+                        app:tint="@color/on_primary"
                         android:contentDescription="@string/action_borrowing" />
 
                     <TextView
@@ -165,7 +164,7 @@
                         android:layout_height="64dp"
                         android:layout_marginBottom="16dp"
                         android:src="@drawable/ic_assignment_return"
-                        android:tint="@color/primary"
+                        app:tint="@color/primary"
                         android:contentDescription="@string/action_returns" />
 
                     <TextView
@@ -214,7 +213,7 @@
                         android:layout_height="64dp"
                         android:layout_marginBottom="16dp"
                         android:src="@drawable/ic_menu_book"
-                        android:tint="@color/secondary"
+                        app:tint="@color/secondary"
                         android:contentDescription="@string/action_book_list" />
 
                     <TextView
