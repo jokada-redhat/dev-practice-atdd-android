@@ -18,6 +18,9 @@ decisions:
 
 ## 変更履歴
 
+- **v4.3** (2026-04-06): V-2 connectedDebugAndroidTest 緑化（7/7 通過）。
+  UIテストデータを DummyDataGenerator に合わせて更新、ログインテストを StubAuthRepository 対応。
+  E2E貸出フローテストは複数Activity遷移の競合問題で @wip に設定（別途対応）。
 - **v4.2** (2026-04-05): I-1~I-4 (Activity Repository/UseCase 統合) 完了を確認・反映。
   残: connectedDebugAndroidTest 緑化 (V-2)
 - **v4.1** (2026-03-30): イテレーション3 完了 + イテレーション4 途中。
@@ -201,7 +204,7 @@ decisions:
 | I-2 | AddMemberActivity UseCase 統合 | Dev-C | S | UI-4 | ✅ 完了 |
 | I-3 | BookCatalogActivity Repository 統合 | Dev-C | S | UI-5 | ✅ 完了 |
 | I-4 | 貸し出しボタン UseCase 統合 | Dev-C | M | UI-6 | ✅ 完了 |
-| V-2 | connectedDebugAndroidTest 緑化 | 合流 | L | I-1~I-4 | ⬜ 未着手 |
+| V-2 | connectedDebugAndroidTest 緑化 | 合流 | L | I-1~I-4 | ✅ 完了 (E2Eテスト1件 @wip) |
 
 **工数見積**: S=1-2h, M=3-4h, L=5-6h
 
