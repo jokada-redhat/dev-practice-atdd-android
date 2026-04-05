@@ -36,8 +36,14 @@ class LibraryUiSteps {
 
     @Before("@library")
     fun setUp() {
-        // セッションにダミーデータを設定（認証スキップ用）
         val app = TestHelper.getApp()
+        // ダミーデータを毎回リロード（テスト間の状態汚染を防止）
+        com.example.libretta.debug.DummyDataGenerator(
+            app.memberRepository,
+            app.bookRepository,
+            app.loanRepository
+        ).loadDummyData()
+        // セッションにダミーデータを設定（認証スキップ用）
         app.getSharedPreferences("atdd_session", Context.MODE_PRIVATE)
             .edit()
             .putString("token", "dev-token")
@@ -78,7 +84,11 @@ class LibraryUiSteps {
 
     @Given("トップ画面が表示されている")
     fun topActivityIsDisplayed() {
-        topScenario = ActivityScenario.launch(TopActivity::class.java)
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val intent = Intent(context, TopActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        context.startActivity(intent)
         Thread.sleep(SCREEN_TRANSITION_WAIT_MS)
     }
 
@@ -164,6 +174,8 @@ class LibraryUiSteps {
 
     @And("書籍 {string} の貸し出しボタンをタップする")
     fun tapBorrowButton(title: String) {
+        // 書籍カタログ画面の表示を待機（E2Eフローでは複数画面遷移するため長めに待つ）
+        waitForView(R.id.recyclerViewBooks)
         // 対象の書籍カードまでスクロールしてBorrowボタンをクリック
         onView(withId(R.id.recyclerViewBooks))
             .perform(
@@ -186,13 +198,31 @@ class LibraryUiSteps {
             )
     }
 
-    @Then("貸し出し成功メッセージが表示される")
-    fun borrowSuccessMessageIsDisplayed() {
-        // Toast表示を待機
-        Thread.sleep(TOAST_WAIT_MS)
-        // Toastの検証はEspressoでは困難なため、
-        // 画面がクラッシュせずに表示されていることを確認
-        onView(withId(R.id.recyclerViewBooks)).check(matches(isDisplayed()))
+    @And("貸し出し確認ダイアログで「貸し出す」をタップする")
+    fun confirmBorrowDialog() {
+        Thread.sleep(FILTER_WAIT_MS)
+        onView(withText("貸し出す")).perform(click())
+    }
+
+    @Then("貸し出し確認画面が表示される")
+    fun loanConfirmationIsDisplayed() {
+        // 貸出確認画面への遷移を待機
+        Thread.sleep(SCREEN_TRANSITION_WAIT_MS)
+        onView(withId(R.id.textConfirmBookTitle)).check(matches(isDisplayed()))
+    }
+
+    private fun waitForView(viewId: Int, timeoutMs: Long = 5000L) {
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            try {
+                onView(withId(viewId)).check(matches(isDisplayed()))
+                return
+            } catch (_: Exception) {
+                Thread.sleep(250)
+            }
+        }
+        // 最終確認（失敗時は例外を投げる）
+        onView(withId(viewId)).check(matches(isDisplayed()))
     }
 
     @Then("貸し出しエラーメッセージが表示される")
@@ -203,7 +233,7 @@ class LibraryUiSteps {
     }
 
     private companion object {
-        const val SCREEN_TRANSITION_WAIT_MS = 1000L
+        const val SCREEN_TRANSITION_WAIT_MS = 2000L
         const val FILTER_WAIT_MS = 500L
         const val TOAST_WAIT_MS = 1000L
     }
