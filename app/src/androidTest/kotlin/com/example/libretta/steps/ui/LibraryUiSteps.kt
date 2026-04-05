@@ -65,8 +65,9 @@ class LibraryUiSteps {
         val app = TestHelper.getApp()
         val member = app.memberRepository.search(memberName).firstOrNull()
             ?: throw IllegalStateException("会員 '$memberName' が見つかりません")
+        val borrowedBookIds = app.loanRepository.findBorrowedBookIds()
         val availableBooks = app.bookRepository.findAll()
-            .filter { it.isAvailable }
+            .filter { it.id !in borrowedBookIds }
             .take(3)
         val borrowUseCase = com.example.libretta.loan.BorrowBookUseCase(
             app.loanRepository,
