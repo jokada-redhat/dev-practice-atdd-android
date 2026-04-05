@@ -18,6 +18,8 @@ decisions:
 
 ## 変更履歴
 
+- **v4.2** (2026-04-05): I-1~I-4 (Activity Repository/UseCase 統合) 完了を確認・反映。
+  残: connectedDebugAndroidTest 緑化 (V-2)
 - **v4.1** (2026-03-30): イテレーション3 完了 + イテレーション4 途中。
   Feature ファイル作成、ドメインモデル拡張、Repository/UseCase 実装、
   ステップ定義実装、JVM テスト 29 件全緑。
@@ -195,10 +197,10 @@ decisions:
 | UI-4~6 | LibraryUiSteps 統合実装 | Dev-B | M | UI-1~3 | ✅ 完了 |
 | T-1 | @login/@library タグ分離 | Dev-C | S | - | ✅ 完了 |
 | T-2 | espresso-contrib 依存追加 | Dev-C | S | - | ✅ 完了 |
-| I-1 | MemberListActivity Repository 統合 | Dev-C | S | UI-4 | ⬜ 未着手 |
-| I-2 | AddMemberActivity UseCase 統合 | Dev-C | S | UI-4 | ⬜ 未着手 |
-| I-3 | BookCatalogActivity Repository 統合 | Dev-C | S | UI-5 | ⬜ 未着手 |
-| I-4 | 貸し出しボタン UseCase 統合 | Dev-C | M | UI-6 | ⬜ 未着手 |
+| I-1 | MemberListActivity Repository 統合 | Dev-C | S | UI-4 | ✅ 完了 |
+| I-2 | AddMemberActivity UseCase 統合 | Dev-C | S | UI-4 | ✅ 完了 |
+| I-3 | BookCatalogActivity Repository 統合 | Dev-C | S | UI-5 | ✅ 完了 |
+| I-4 | 貸し出しボタン UseCase 統合 | Dev-C | M | UI-6 | ✅ 完了 |
 | V-2 | connectedDebugAndroidTest 緑化 | 合流 | L | I-1~I-4 | ⬜ 未着手 |
 
 **工数見積**: S=1-2h, M=3-4h, L=5-6h
