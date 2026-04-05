@@ -62,7 +62,11 @@ class LibraryUiSteps {
 
     @Given("トップ画面が表示されている")
     fun topActivityIsDisplayed() {
-        topScenario = ActivityScenario.launch(TopActivity::class.java)
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val intent = Intent(context, TopActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        context.startActivity(intent)
         Thread.sleep(SCREEN_TRANSITION_WAIT_MS)
     }
 
@@ -172,13 +176,17 @@ class LibraryUiSteps {
             )
     }
 
-    @Then("貸し出し成功メッセージが表示される")
-    fun borrowSuccessMessageIsDisplayed() {
-        // Toast表示を待機
-        Thread.sleep(TOAST_WAIT_MS)
-        // Toastの検証はEspressoでは困難なため、
-        // 画面がクラッシュせずに表示されていることを確認
-        onView(withId(R.id.recyclerViewBooks)).check(matches(isDisplayed()))
+    @And("貸し出し確認ダイアログで「貸し出す」をタップする")
+    fun confirmBorrowDialog() {
+        Thread.sleep(FILTER_WAIT_MS)
+        onView(withText("貸し出す")).perform(click())
+    }
+
+    @Then("貸し出し確認画面が表示される")
+    fun loanConfirmationIsDisplayed() {
+        // 貸出確認画面への遷移を待機
+        Thread.sleep(SCREEN_TRANSITION_WAIT_MS)
+        onView(withId(R.id.textConfirmBookTitle)).check(matches(isDisplayed()))
     }
 
     private fun waitForView(viewId: Int, timeoutMs: Long = 5000L) {
