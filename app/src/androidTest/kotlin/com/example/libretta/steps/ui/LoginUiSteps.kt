@@ -6,7 +6,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -64,8 +64,8 @@ class LoginUiSteps {
     @When("メールアドレス {string} とパスワード {string} でログインする")
     fun login(email: String, password: String) {
         scenario = ActivityScenario.launch(LoginActivity::class.java)
-        onView(withId(R.id.editEmail)).perform(typeText(email), closeSoftKeyboard())
-        onView(withId(R.id.editPassword)).perform(typeText(password), closeSoftKeyboard())
+        onView(withId(R.id.editEmail)).perform(replaceText(email), closeSoftKeyboard())
+        onView(withId(R.id.editPassword)).perform(replaceText(password), closeSoftKeyboard())
         onView(withId(R.id.buttonLogin)).perform(click())
         // OkHttp IdlingResource は HTTP 完了のみ待機する。
         // コルーチンの Main ディスパッチ + Activity 遷移を待つため短い待機を入れる。

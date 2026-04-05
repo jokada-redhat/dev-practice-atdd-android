@@ -36,8 +36,14 @@ class LibraryUiSteps {
 
     @Before("@library")
     fun setUp() {
-        // セッションにダミーデータを設定（認証スキップ用）
         val app = TestHelper.getApp()
+        // ダミーデータを毎回リロード（テスト間の状態汚染を防止）
+        com.example.libretta.debug.DummyDataGenerator(
+            app.memberRepository,
+            app.bookRepository,
+            app.loanRepository
+        ).loadDummyData()
+        // セッションにダミーデータを設定（認証スキップ用）
         app.getSharedPreferences("atdd_session", Context.MODE_PRIVATE)
             .edit()
             .putString("token", "dev-token")
@@ -142,6 +148,8 @@ class LibraryUiSteps {
 
     @And("書籍 {string} の貸し出しボタンをタップする")
     fun tapBorrowButton(title: String) {
+        // 書籍カタログ画面の表示を待機（E2Eフローでは複数画面遷移するため長めに待つ）
+        waitForView(R.id.recyclerViewBooks)
         // 対象の書籍カードまでスクロールしてBorrowボタンをクリック
         onView(withId(R.id.recyclerViewBooks))
             .perform(
@@ -173,8 +181,22 @@ class LibraryUiSteps {
         onView(withId(R.id.recyclerViewBooks)).check(matches(isDisplayed()))
     }
 
+    private fun waitForView(viewId: Int, timeoutMs: Long = 5000L) {
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            try {
+                onView(withId(viewId)).check(matches(isDisplayed()))
+                return
+            } catch (_: Exception) {
+                Thread.sleep(250)
+            }
+        }
+        // 最終確認（失敗時は例外を投げる）
+        onView(withId(viewId)).check(matches(isDisplayed()))
+    }
+
     private companion object {
-        const val SCREEN_TRANSITION_WAIT_MS = 1000L
+        const val SCREEN_TRANSITION_WAIT_MS = 2000L
         const val FILTER_WAIT_MS = 500L
         const val TOAST_WAIT_MS = 1000L
     }
