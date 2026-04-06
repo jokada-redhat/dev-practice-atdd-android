@@ -61,8 +61,11 @@ class LoginUiSteps {
         server.dispatcher = createAuthDispatcher(email, password, "山田太郎")
     }
 
-    @When("メールアドレス {string} とパスワード {string} でログインする")
-    fun login(email: String, password: String) {
+    @When("以下の認証情報でログインする")
+    fun login(dataTable: io.cucumber.datatable.DataTable) {
+        val row = dataTable.asMaps().first()
+        val email = row["email"]!!
+        val password = row["password"]!!
         scenario = ActivityScenario.launch(LoginActivity::class.java)
         onView(withId(R.id.editEmail)).perform(replaceText(email), closeSoftKeyboard())
         onView(withId(R.id.editPassword)).perform(replaceText(password), closeSoftKeyboard())

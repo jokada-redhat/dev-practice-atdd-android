@@ -162,9 +162,9 @@ class LibraryUiSteps {
     @When("{string} フィルタボタンをタップする")
     fun tapFilterButton(filterLabel: String) {
         val buttonId = when (filterLabel) {
-            "All" -> R.id.buttonFilterAll
-            "Available" -> R.id.buttonFilterAvailable
-            "Borrowed" -> R.id.buttonFilterBorrowed
+            "すべて" -> R.id.buttonFilterAll
+            "貸出可" -> R.id.buttonFilterAvailable
+            "貸出中" -> R.id.buttonFilterBorrowed
             else -> throw IllegalArgumentException("Unknown filter: $filterLabel")
         }
         onView(withId(buttonId)).perform(click())
