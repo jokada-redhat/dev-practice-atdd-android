@@ -75,14 +75,4 @@ class BookAdapter(
         books = newBooks
         diffResult.dispatchUpdatesTo(this)
     }
-
-    fun filter(filterType: FilterType) {
-        // フィルタリング処理は後で実装
-    }
-
-    enum class FilterType {
-        ALL,
-        AVAILABLE,
-        BORROWED
-    }
 }
