@@ -80,7 +80,6 @@ class BookCatalogActivity : AppCompatActivity() {
         val buttonAvailable = findViewById<MaterialButton>(R.id.buttonFilterAvailable)
         val buttonBorrowed = findViewById<MaterialButton>(R.id.buttonFilterBorrowed)
 
-        // デフォルトで All を選択状態に
         setActiveButton(buttonAll, buttonAvailable, buttonBorrowed)
 
         buttonAll.setOnClickListener {
