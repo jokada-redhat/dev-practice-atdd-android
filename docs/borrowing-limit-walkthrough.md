@@ -134,8 +134,9 @@ class BorrowBookUseCase(
 ### テスト実行
 
 ```bash
-./gradlew test   # 全テストパス
-./gradlew lint   # 警告ゼロ
+./gradlew test                    # JVM ユニットテスト全パス
+./gradlew connectedAndroidTest    # UI テスト全パス（エミュレータ必要）
+./gradlew lint                    # 警告ゼロ
 ```
 
 全シナリオが GREEN になりました。
@@ -145,6 +146,29 @@ class BorrowBookUseCase(
 ```
 impl: BorrowBookUseCase に貸出上限チェックを追加
 ```
+
+## Step 2.5: UI テストを追加する
+
+JVM テストでビジネスロジックが動作確認できたら、UI テスト（E2E）も追加します。
+
+`app/src/androidTest/assets/features/borrowing_flow_ui.feature` にシナリオを追加:
+
+```gherkin
+Scenario: 貸出上限に達している場合は借りられない
+    Given 会員 "山田太郎" の貸出冊数を上限に設定する
+    And トップ画面が表示されている
+    When 貸し出しカードをタップする
+    And 会員 "山田太郎" のカードをタップする
+    And 書籍 "吾輩は猫である" の貸し出しボタンをタップする
+    Then 貸し出しエラーメッセージが表示される
+```
+
+JVM テストとの違い:
+
+- **JVM テスト**: ドメインロジック（`BorrowBookUseCase`）を直接呼び出して検証
+- **UI テスト**: 実際の画面操作（タップ・遷移）を通じてエンドツーエンドで検証
+
+両方のレイヤーでテストすることで、ロジックの正しさと UI の振る舞いの両方を保証できます。
 
 ## Step 3: リファクタリング
 
