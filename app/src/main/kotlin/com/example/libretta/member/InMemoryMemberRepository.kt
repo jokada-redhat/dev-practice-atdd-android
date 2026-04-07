@@ -12,7 +12,7 @@ class InMemoryMemberRepository : MemberRepository {
 
     override fun findById(id: String): Member? = members[id]
 
-    override fun findAll(): List<Member> = members.values.toList()
+    override fun findAll(): List<Member> = members.values.sortedBy { it.id }
 
     override fun search(query: String): List<Member> = members.values.filter {
         it.name.contains(query, ignoreCase = true) ||
