@@ -348,22 +348,19 @@ Cucumber はタグ式でシナリオをフィルタリングできます。`@smo
 ./gradlew test -Dcucumber.filter.tags="@smoke or @api"
 ```
 
-#### UI テスト（CucumberOptions のタグ設定）
+#### UI テスト（Gradle プロジェクトプロパティ）
 
-`connectedAndroidTest` ではシステムプロパティではなく、`CucumberTestOptions` の `@CucumberOptions` アノテーションでタグを指定します:
-
-```kotlin
-// app/src/androidTest/kotlin/.../test/CucumberTestOptions.kt
-@CucumberOptions(
-    features = ["features"],
-    glue = ["com.example.libretta.steps.ui"],
-    tags = "@smoke"  // ここでタグを指定
-)
-class CucumberTestOptions
-```
+`connectedAndroidTest` では `-P` オプションでタグを指定します。デフォルトは `not @wip`（@wip 以外すべて実行）です:
 
 ```bash
+# @smoke タグのみ実行
+./gradlew connectedAndroidTest -PcucumberTags="@smoke"
+
+# デフォルト（@wip 以外すべて実行）
 ./gradlew connectedAndroidTest
+
+# 複数タグの OR 条件
+./gradlew connectedAndroidTest -PcucumberTags="@smoke or @api"
 ```
 
 #### タグ式の構文
