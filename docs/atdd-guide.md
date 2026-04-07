@@ -8,6 +8,7 @@
 4. [Gherkin の書き方](#4-gherkin-の書き方)
 5. [良いシナリオを書くためのポイント](#5-良いシナリオを書くためのポイント)
 6. [本プロジェクトでの実践](#6-本プロジェクトでの実践)
+   - [タグによるテスト実行の絞り込み（スモークテストなど）](#タグによるテスト実行の絞り込みスモークテストなど)
 7. [よくある質問](#7-よくある質問)
 
 ---
@@ -157,6 +158,17 @@ Scenario: 登録済みの書籍が一覧表示される
 Scenario: 会員が書籍を借りる
   ...
 ```
+
+タグの活用例:
+
+| タグ | 用途 |
+|------|------|
+| `@smoke` | スモークテスト（主要機能の疎通確認） |
+| `@wip` | 作業中のシナリオ |
+| `@api` | API 関連のシナリオ |
+| `@slow` | 実行に時間がかかるシナリオ |
+
+タグによるテスト実行の絞り込み方法は [タグによるテスト実行の絞り込み](#タグによるテスト実行の絞り込みスモークテストなど) を参照してください。
 
 ## 5. 良いシナリオを書くためのポイント
 
@@ -318,6 +330,60 @@ Feature: 貸出上限
 
 > **注意**: `connectedAndroidTest` は Android エミュレータまたは実機が接続・起動されている必要があります。
 > エミュレータの起動は Android Studio から行うか、コマンドラインで `emulator -avd <AVD名>` を実行してください。
+
+### タグによるテスト実行の絞り込み（スモークテストなど）
+
+Cucumber はタグ式でシナリオをフィルタリングできます。`@smoke` タグが付いたシナリオだけを実行する（スモークテスト）場合は以下のように指定します。
+
+#### JVM ユニットテスト（Gradle システムプロパティ）
+
+```bash
+# @smoke タグのみ実行
+./gradlew test -Dcucumber.filter.tags="@smoke"
+
+# @wip を除外（デフォルト推奨）
+./gradlew test -Dcucumber.filter.tags="not @wip"
+
+# 複数タグの OR 条件
+./gradlew test -Dcucumber.filter.tags="@smoke or @api"
+```
+
+#### UI テスト（CucumberOptions のタグ設定）
+
+`connectedAndroidTest` ではシステムプロパティではなく、`CucumberTestOptions` の `@CucumberOptions` アノテーションでタグを指定します:
+
+```kotlin
+// app/src/androidTest/kotlin/.../test/CucumberTestOptions.kt
+@CucumberOptions(
+    features = ["features"],
+    glue = ["com.example.libretta.steps.ui"],
+    tags = "@smoke"  // ここでタグを指定
+)
+class CucumberTestOptions
+```
+
+```bash
+./gradlew connectedAndroidTest
+```
+
+#### タグ式の構文
+
+Cucumber のタグ式は論理演算子をサポートしています:
+
+| 式 | 意味 |
+|----|------|
+| `@smoke` | `@smoke` タグを持つシナリオ |
+| `not @wip` | `@wip` タグを持たないシナリオ |
+| `@smoke and not @slow` | `@smoke` かつ `@slow` でないシナリオ |
+| `@smoke or @api` | `@smoke` または `@api` のシナリオ |
+
+#### どのシナリオに @smoke を付けるべきか
+
+スモークテストは「主要機能が壊れていないかの疎通確認」が目的です。以下の基準で付与します:
+
+- 各 Feature の代表的な正常系シナリオ（1〜2個）
+- ユーザーが最も頻繁に使う操作のシナリオ
+- CI で毎回実行しても負担にならない程度の数に絞る
 
 ### コミットメッセージ規約
 
