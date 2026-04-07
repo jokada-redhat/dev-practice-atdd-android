@@ -12,6 +12,7 @@ import com.example.libretta.loan.ReturnBookUseCase
 import com.example.libretta.member.InMemoryMemberRepository
 import com.example.libretta.model.Book
 import com.example.libretta.model.Member
+import io.cucumber.datatable.DataTable
 import io.cucumber.java.Before
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
@@ -59,18 +60,23 @@ class ReturnBookSteps {
         )
     }
 
-    @And("会員 {string} が書籍 {string} \\(ISBN: {string}) を借りている")
-    fun memberHasBorrowedBookWithIsbn(memberId: String, title: String, isbn: String) {
-        val book = Book(
-            id = title.hashCode().toString(),
-            title = title,
-            author = "Test Author",
-            isbn = isbn,
-            publicationYear = "2024"
-        )
-        bookRepository.save(book)
-        val result = borrowBookUseCase.execute(BorrowBookRequest(memberId = memberId, bookId = book.id))
-        assertTrue("貸出が成功していません", result is BorrowBookResult.Success)
+    @And("返却用に以下の書籍が貸出されている:")
+    fun booksAreBorrowed(dataTable: DataTable) {
+        for (row in dataTable.asMaps()) {
+            val memberId = row["memberId"]!!
+            val title = row["title"]!!
+            val isbn = row["isbn"]!!
+            val book = Book(
+                id = title.hashCode().toString(),
+                title = title,
+                author = "Test Author",
+                isbn = isbn,
+                publicationYear = "2024"
+            )
+            bookRepository.save(book)
+            val result = borrowBookUseCase.execute(BorrowBookRequest(memberId = memberId, bookId = book.id))
+            assertTrue("貸出が成功していません", result is BorrowBookResult.Success)
+        }
     }
 
     @When("返却画面を開く")

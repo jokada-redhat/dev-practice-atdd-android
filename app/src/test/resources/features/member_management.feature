@@ -16,7 +16,7 @@ Feature: 会員管理
       | DA-5509  | Julian Chen  |
     When 会員一覧を取得する
     Then 会員リストに 3 件の会員が含まれている
-    And 会員リストの先頭は "Taro Yamada" である
+    And 会員リストの先頭は "Marcus Thorne" である
 
   Scenario: 会員を名前で検索する
     Given 以下の会員が登録されている:

@@ -4,6 +4,7 @@ import com.example.libretta.auth.AuthRepository
 import com.example.libretta.auth.LoginRequest
 import com.example.libretta.auth.LoginResult
 import com.example.libretta.auth.LoginUseCase
+import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -34,13 +35,17 @@ class LoginSteps {
         loginUseCase = LoginUseCase(repository)
     }
 
-    @Given("ユーザー {string} がパスワード {string} で登録されている")
-    fun userIsRegistered(email: String, password: String) {
-        registeredUsers[email] = password
+    @Given("以下の認証情報でユーザーが登録されている:")
+    fun usersAreRegistered(dataTable: DataTable) {
+        val row = dataTable.asMaps().first()
+        registeredUsers[row["email"]!!] = row["password"]!!
     }
 
-    @When("メールアドレス {string} とパスワード {string} でログインする")
-    fun loginWith(email: String, password: String) {
+    @When("以下の認証情報でログインする")
+    fun loginWith(dataTable: DataTable) {
+        val row = dataTable.asMaps().first()
+        val email = row["email"] ?: ""
+        val password = row["password"] ?: ""
         if (!::loginUseCase.isInitialized) {
             // バリデーションテスト用: APIなしでもUseCaseを生成
             val dummyRepository = object : AuthRepository {
