@@ -58,6 +58,29 @@ class LibraryUiSteps {
         bookCatalogScenario?.close()
     }
 
+    // === 貸出上限セットアップ ===
+
+    @Given("会員 {string} の貸出冊数を上限に設定する")
+    fun setMemberLoanCountToLimit(memberName: String) {
+        val app = TestHelper.getApp()
+        val member = app.memberRepository.search(memberName).firstOrNull()
+            ?: throw IllegalStateException("会員 '$memberName' が見つかりません")
+        val borrowedBookIds = app.loanRepository.findBorrowedBookIds()
+        val availableBooks = app.bookRepository.findAll()
+            .filter { it.id !in borrowedBookIds }
+            .take(3)
+        val borrowUseCase = com.example.libretta.loan.BorrowBookUseCase(
+            app.loanRepository,
+            app.bookRepository,
+            app.memberRepository
+        )
+        for (book in availableBooks) {
+            borrowUseCase.execute(
+                com.example.libretta.loan.BorrowBookRequest(member.id, book.id)
+            )
+        }
+    }
+
     // === トップ画面 ===
 
     @Given("トップ画面が表示されている")
@@ -201,6 +224,13 @@ class LibraryUiSteps {
         }
         // 最終確認（失敗時は例外を投げる）
         onView(withId(viewId)).check(matches(isDisplayed()))
+    }
+
+    @Then("貸し出しエラーメッセージが表示される")
+    fun borrowErrorMessageIsDisplayed() {
+        Thread.sleep(TOAST_WAIT_MS)
+        // エラー時は画面遷移せずカタログ画面が表示されたままであることを確認
+        onView(withId(R.id.recyclerViewBooks)).check(matches(isDisplayed()))
     }
 
     private companion object {

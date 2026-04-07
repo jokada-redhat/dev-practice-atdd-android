@@ -18,10 +18,20 @@ class BorrowBookUseCase(
     private val bookRepository: BookRepository,
     private val memberRepository: MemberRepository
 ) {
+    private companion object {
+        const val BORROWING_LIMIT = 3
+    }
+
     fun execute(request: BorrowBookRequest): BorrowBookResult {
         // 会員の存在確認
         memberRepository.findById(request.memberId)
             ?: return BorrowBookResult.Failure("会員が見つかりません")
+
+        // 貸出上限チェック
+        val activeLoanCount = loanRepository.countActiveByMemberId(request.memberId)
+        if (activeLoanCount >= BORROWING_LIMIT) {
+            return BorrowBookResult.Failure("貸出上限（${BORROWING_LIMIT}冊）に達しています")
+        }
 
         // 書籍の存在確認
         bookRepository.findById(request.bookId)
