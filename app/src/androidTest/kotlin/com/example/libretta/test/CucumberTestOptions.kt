@@ -4,7 +4,6 @@ import io.cucumber.junit.CucumberOptions
 
 @CucumberOptions(
     features = ["features"],
-    glue = ["com.example.libretta.steps.ui"],
-    tags = "not @wip"
+    glue = ["com.example.libretta.steps.ui"]
 )
 class CucumberTestOptions

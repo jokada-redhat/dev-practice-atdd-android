@@ -16,6 +16,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "com.example.libretta.test.TestRunner"
+
+        // Cucumber タグフィルタ（デフォルト: @wip 以外すべて実行）
+        // 例: ./gradlew connectedAndroidTest -PcucumberTags="@smoke"
+        testInstrumentationRunnerArguments["tags"] =
+            project.findProperty("cucumberTags") as String? ?: "not @wip"
     }
 
     buildFeatures {
