@@ -54,6 +54,10 @@ kotlin {
 }
 
 tasks.withType<Test> {
+    // Cucumber タグフィルタをテスト JVM に転送
+    // 例: ./gradlew test -Dcucumber.filter.tags="@smoke"
+    systemProperty("cucumber.filter.tags", System.getProperty("cucumber.filter.tags") ?: "")
+
     extensions.configure(JacocoTaskExtension::class) {
         isIncludeNoLocationClasses = true
         excludes = listOf("jdk.internal.*")
