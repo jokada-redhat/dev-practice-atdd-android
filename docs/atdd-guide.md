@@ -250,7 +250,7 @@ app/src/
 │       ├── BookManagementSteps.kt
 │       └── CommonSteps.kt
 └── androidTest/
-    ├── resources/features/            # feature ファイル（UI テスト層）
+    ├── assets/features/               # feature ファイル（UI テスト層）
     └── kotlin/.../steps/ui/           # UI ステップ定義（Espresso）
 ```
 
@@ -311,9 +311,13 @@ Feature: 貸出上限
 #### Step 5: テストと Lint を確認する
 
 ```bash
-./gradlew test    # 全テスト実行
-./gradlew lint    # 静的解析
+./gradlew test                    # JVM ユニットテスト実行
+./gradlew connectedAndroidTest    # UI テスト実行（エミュレータまたは実機が必要）
+./gradlew lint                    # 静的解析
 ```
+
+> **注意**: `connectedAndroidTest` は Android エミュレータまたは実機が接続・起動されている必要があります。
+> エミュレータの起動は Android Studio から行うか、コマンドラインで `emulator -avd <AVD名>` を実行してください。
 
 ### コミットメッセージ規約
 
@@ -342,7 +346,7 @@ Feature: 貸出上限
 
 ### Q: UI テストとユニットテストの feature ファイルは分ける？
 
-本プロジェクトでは分けています。ビジネスロジックのテストは `src/test/resources/features/`（高速・安定）、UI の振る舞いテストは `src/androidTest/resources/features/`（エミュレータ必要）に配置します。
+本プロジェクトでは分けています。ビジネスロジックのテストは `src/test/resources/features/`（`./gradlew test` で実行、高速・安定）、UI の振る舞いテストは `src/androidTest/assets/features/`（`./gradlew connectedAndroidTest` で実行、エミュレータまたは実機が必要）に配置します。
 
 ### Q: feature ファイルは日本語で書いてもいい？
 
